@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
+  m_Name: Minnow
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 919132149155446097, guid: bc60bc4de74414640ad6010d332fc543, type: 3}
+  swimSpeed: 26
+  swimHuntSpeed: 35
+  perceptionRadius: 55
+  avoidanceRadius: 2.3
+  avoidanceSeconds: 1.5
+  foodScore: 0
+  minSizeMultiplier: 3
+  maxSizeMultiplier: 3
+  hungerWeight: 1
+  hungryInSeconds: 30
+  biteRange: 2.5
+  cohesionWeight: 1
+  separationWeight: 0.03
+  alignmentWeight: 0.38
+  alignmentSpeed: 20
+  maidenName: Minnow
+  favoriteSong: doesnt listen to music
+  luckyNumber: 238
