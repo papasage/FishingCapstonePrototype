@@ -58,6 +58,7 @@ public class BoidBehavior : MonoBehaviour
     private float hungerWeight;          // UNUSED: Potentially increases the aggression/speed of the fish over time as they get hungry.
     private float hungryInSeconds;       // The amount of time in seconds it takes to become hungry
     private float biteRange;             // Range a fish must be to Eat() another fish when hunting. 
+    private float decompositionTime;     // Variable for how long it takes to start decomposition
     //public float avoidSpeed;
 
     [Header("Schooling Behavior Stats")]
@@ -188,6 +189,7 @@ public class BoidBehavior : MonoBehaviour
             hungerWeight = fish.hungerWeight;
             hungryInSeconds = fish.hungryInSeconds;
             biteRange = fish.biteRange;
+            decompositionTime = fish.decompositionTime;
 
             //BOID BEHAVIORS
             cohesionWeight = fish.cohesionWeight;
@@ -518,7 +520,7 @@ public class BoidBehavior : MonoBehaviour
     {
         float elapsedTime = 0f;
 
-        while (elapsedTime < (hungryInSeconds + Random.Range(5f, 20f)))
+        while (elapsedTime < (hungryInSeconds * sizeMultiplier))
         {
             elapsedTime += Time.deltaTime;
             yield return null;
@@ -530,7 +532,7 @@ public class BoidBehavior : MonoBehaviour
     IEnumerator Decompose()
     {
         float scale = 1f;
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(decompositionTime);
 
         while (scale >= 0f)
         {

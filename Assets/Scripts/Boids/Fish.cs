@@ -22,6 +22,7 @@ public class Fish : ScriptableObject
     public float hungerWeight = 1f;                 // TODO: The factor for how aggressively the fish will move towards prey. x1 is default movement speed.
     public float hungryInSeconds = 30f;             // The amount of time in seconds it takes to become hungry
     public float biteRange = 2.5f;                  // Range a fish must be to eat
+    public float decompositionTime = 5f;                // Variable for how long it takes to start decomposition
 
     [Header("Schooling Behavior Stats")]
     public float cohesionWeight = 0.89f;            // This fish's desire to stay in the center of its neighbors 1 = 100%
