@@ -200,10 +200,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fish: {fileID: 0}
   allFish:
-  - {fileID: 11400000, guid: 4a98e0cf409eb1248806942de13656df, type: 2}
-  - {fileID: 11400000, guid: 2953a31e5aac8fa4e97e2f2e39cda341, type: 2}
+  - {fileID: 11400000, guid: f5916ad80a32e7c4d86830b7f6e9914c, type: 2}
   - {fileID: 11400000, guid: fa31c2242fcd75a4db33db2690057fae, type: 2}
-  - {fileID: 11400000, guid: 564e8ab1b5586434d9ee3dae1d715d37, type: 2}
   - {fileID: 11400000, guid: a67113ecfe360ea4ab9a8ee99d7edc79, type: 2}
   obstacleLayer:
     serializedVersion: 2
@@ -212,6 +210,7 @@ MonoBehaviour:
   isSchooling: 1
   foundFood: 0
   isDead: 0
+  isDeviating: 0
 --- !u!1 &4751844855845049991
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,7 +313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4682061215804316618
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1213,11 +1212,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7956256304743788195, guid: dee8f39f9356c5e46b212c839b4d1be1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.78
+      value: 0.975
       objectReference: {fileID: 0}
     - target: {fileID: 7956256304743788195, guid: dee8f39f9356c5e46b212c839b4d1be1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.771
       objectReference: {fileID: 0}
     - target: {fileID: 7956256304743788195, guid: dee8f39f9356c5e46b212c839b4d1be1, type: 3}
       propertyPath: m_LocalRotation.w

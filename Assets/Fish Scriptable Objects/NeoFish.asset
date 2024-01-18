@@ -10,27 +10,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
-  m_Name: PinHead
+  m_Name: NeoFish
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: fd4fecef40b676b4382cfd8c250b13f1, type: 3}
-  swimSpeed: 30
+  mesh: {fileID: 919132149155446097, guid: 13c8382b39b93934cbed44290e7e3ff3, type: 3}
+  swimSpeed: 26
   swimHuntSpeed: 35
   deviateRange: 10
-  deviateChance: 1.79
-  perceptionRadius: 20
-  avoidanceRadius: 7
+  deviateChance: 1.29
+  perceptionRadius: 8
+  avoidanceRadius: 4.74
   avoidanceSeconds: 1.5
-  foodScore: 2
-  minSizeMultiplier: 0.8
-  maxSizeMultiplier: 1.3
+  foodScore: 1
+  minSizeMultiplier: 0.5
+  maxSizeMultiplier: 1.5
   hungerWeight: 1
   hungryInSeconds: 30
   biteRange: 2.5
   decompositionTime: 5
-  cohesionWeight: 1.04
-  separationWeight: 1.5
-  alignmentWeight: 0.88
-  alignmentSpeed: 1.67
-  maidenName: Pin Head
-  favoriteSong: Clair de Lune - Debussy
-  luckyNumber: 0
+  cohesionWeight: 1
+  separationWeight: 0.18
+  alignmentWeight: 0.38
+  alignmentSpeed: 10.7
+  maidenName: Jack
+  favoriteSong: Can't Stop - Red Hot Chilli Peppers
+  luckyNumber: 155

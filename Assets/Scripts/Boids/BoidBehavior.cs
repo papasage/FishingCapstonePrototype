@@ -34,6 +34,7 @@ public class BoidBehavior : MonoBehaviour
     public bool isSchooling = true;      // Trigger for ApplySchoolingBehavior(). Currently this is always true
     public bool foundFood = false;       // When using ApplyHuntingHehavior(), the fish is using DetectFood(). If a neighbor is found with a lower foodScore, this is the trigger to start the hunt.
     public bool isDead = false;          // A dead fish is a fish with no scriptable object. Currently called by other attacking fish when they Eat()
+    public bool isDeviating = false;
 
     public delegate void OnDeath();
     public static OnDeath onDeath;
@@ -48,12 +49,15 @@ public class BoidBehavior : MonoBehaviour
     [Header("Ability Stats")]
     private float swimSpeed;             // This is the speed they move forward with Swim()
     private float swimHuntSpeed;         // This is the speed they move forward with Swim() while hunting
+    private float deviateRange;          // When deviating, the rotation is a random rotation between a negative and positive of this value. 
+    private float deviateChance;          // Chance to deviate out of 100
     private float perceptionRadius;      // If another boid enters this range, it becomes a neighbor
     private float avoidanceRadius;       // The distance it takes to react to an obstacle TODO:Check the neighbor list for threats and react when they get in this range
     private float avoidanceSeconds;      // The amount of time in seconds it takes to complete an avoidance
 
     [Header("Food Stats")]
     private float foodScore;             // Food chain placement. Fish can only eat fish with lower foodScores.
+    private float scoreDifferenceThreshold = 1.5f; // this is the amount that your foodScore has to be greater by in order to eat another fish.
     private float sizeMultiplier;        // Genetic lottery. Randomly rolled on birth from a range set by that fish's breed (in scriptable object)
     private float hungerWeight;          // UNUSED: Potentially increases the aggression/speed of the fish over time as they get hungry.
     private float hungryInSeconds;       // The amount of time in seconds it takes to become hungry
@@ -98,6 +102,8 @@ public class BoidBehavior : MonoBehaviour
     
     void Update()
     {
+
+
         if (!isDead)
         {
             Swim();
@@ -113,6 +119,12 @@ public class BoidBehavior : MonoBehaviour
             {
                 ApplyHuntingBehavior();
             }
+
+            if(neighbors == null || neighbors.Count <= 0 && !isHungry)
+            {
+                ApplyDeviateBehavior();
+            }
+
         }
 
         //DEBUG: Refresh the Boid list
@@ -131,6 +143,11 @@ public class BoidBehavior : MonoBehaviour
         if (Input.GetKeyDown("k"))
         {
             Die();
+        }
+        
+        if (Input.GetKeyDown("d"))
+        {
+            StartCoroutine(DeviateCoroutine());
         }
     }
 
@@ -162,7 +179,7 @@ public class BoidBehavior : MonoBehaviour
         // ensure we are not using gravity, because we only enable it for a dead fish
         rb.useGravity = false;
         // Find the name tag object on the prefab
-        label = GetComponentInChildren<TMP_Text>();
+        //label = GetComponentInChildren<TMP_Text>();
 
         //Clear out any current mesh being held from a previous scriptable object.
         if (currentMesh != null)
@@ -179,6 +196,8 @@ public class BoidBehavior : MonoBehaviour
             //ABILITY STATS
             swimSpeed = fish.swimSpeed;
             swimHuntSpeed = fish.swimHuntSpeed;
+            deviateRange = fish.deviateRange;
+            deviateChance = fish.deviateChance;
             perceptionRadius = fish.perceptionRadius;
             avoidanceRadius = fish.avoidanceRadius;
             avoidanceSeconds = fish.avoidanceSeconds;
@@ -208,7 +227,7 @@ public class BoidBehavior : MonoBehaviour
 
             //Fill in the name tag on the prefab
             //label.text = maidenName;
-            label.text = foodScore.ToString();
+            //label.text = foodScore.ToString();
         }
 
         //If there is no scriptable object found, enable gravity. A fish skeleton will sink to the bottom.
@@ -216,7 +235,7 @@ public class BoidBehavior : MonoBehaviour
         {
             isDead = true;
             rb.useGravity = true;
-            label.text = "Dead";
+            //label.text = "Dead";
             foodScore = -1f;
 
             //ABILITY STATS
@@ -266,6 +285,15 @@ public class BoidBehavior : MonoBehaviour
     {
         Vector3 normalForward = transform.forward * currentSpeed;
         rb.velocity += normalForward * Time.deltaTime;
+    }
+    void ApplyDeviateBehavior()
+    {
+        int chanceRoll = Random.Range(1,100);
+
+        if (chanceRoll < deviateChance && !isDeviating)
+        {
+            StartCoroutine(DeviateCoroutine());
+        }
     }
     void AvoidObstacle()
     {
@@ -461,7 +489,7 @@ public class BoidBehavior : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(averageDirection);
         // Smoothly interpolate towards the target rotation (you can adjust the speed)
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * alignmentSpeed);
-
+        //transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * alignmentSpeed);
         //by subtracting THIS boids forward vector, we can know how far it must turn to reach the average direction
         return (averageDirection - transform.forward).normalized;
         //return averageDirection.normalized;
@@ -482,7 +510,7 @@ public class BoidBehavior : MonoBehaviour
         foreach (GameObject neighbor in neighbors)
         {
             //Check if the food score is lower than yours, but not below zero (dead)
-            if (neighbor.GetComponent<BoidBehavior>().foodScore < foodScore && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
+            if (neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
             {
                 foundFood = true;
                 target = neighbor;
@@ -516,6 +544,24 @@ public class BoidBehavior : MonoBehaviour
         // Ensure the final rotation is set
         transform.rotation = targetRotation;
     }
+
+    IEnumerator DeviateCoroutine()
+    {
+        isDeviating = true;
+        float elapsedTime = 0f;
+
+        Quaternion startRotation = transform.rotation;
+        Vector3 rotationVector = new Vector3(0, Random.Range(-deviateRange,deviateRange) ,0 );
+        Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
+        while (elapsedTime < .5f)
+        {
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime / 0.5f);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        isDeviating = false;
+    }
+
     IEnumerator EncroachingHunger()
     {
         float elapsedTime = 0f;

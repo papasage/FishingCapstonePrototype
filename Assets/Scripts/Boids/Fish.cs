@@ -11,6 +11,8 @@ public class Fish : ScriptableObject
     [Header("Ability Stats")]
     public float swimSpeed = 26.3f;                 // This is the speed they move forward with Swim();
     public float swimHuntSpeed = 35f;               // This is the speed they move forward with Swim(); while hunting
+    public float deviateRange = 10f;                // When deviating, the rotation is a random rotation between a negative and positive of this value. 
+    public float deviateChance = 5f;                // Chance to deviate out of 100
     public float perceptionRadius = 5.5f;           // If another boid enters this range, it becomes a neighbor
     public float avoidanceRadius= 7f;               // The distance it takes to react to an obstacle TODO:Check the neighbor list for threats and react when they get in this range
     public float avoidanceSeconds = 1.5f;           // The amount of time in seconds it takes to complete an avoidance
