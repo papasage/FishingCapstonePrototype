@@ -79,6 +79,7 @@ public class BoidBehavior : MonoBehaviour
     ////////////////////////////////////////////////////////////////////
     //RUNTIME
     ////////////////////////////////////////////////////////////////////
+    #region Runtime
     void Awake()
     {
         //Choose a fish from the array of scriptable object fish if you dont already have one assigned
@@ -109,6 +110,7 @@ public class BoidBehavior : MonoBehaviour
             Swim();
             currentSpeed = swimSpeed;
             AvoidObstacle();
+            ApplyUprightBehavior();
 
             if (isSchooling)
             {
@@ -122,7 +124,7 @@ public class BoidBehavior : MonoBehaviour
 
             if(neighbors == null || neighbors.Count <= 0 && !isHungry)
             {
-                ApplyDeviateBehavior();
+                ApplyDeviateBehavior(); 
             }
 
         }
@@ -161,7 +163,7 @@ public class BoidBehavior : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, avoidanceRadius);
     }
-
+    #endregion
     ////////////////////////////////////////////////////////////////////
     //METHODS
     ////////////////////////////////////////////////////////////////////
@@ -360,6 +362,21 @@ public class BoidBehavior : MonoBehaviour
             }
         }
     }
+    void ApplyUprightBehavior()
+    {
+        //Tick time
+        float timeCount = 0f;
+        timeCount += Time.deltaTime;
+
+        //Calculate the target rotation
+        Quaternion startRotation = transform.rotation;
+        Vector3 rotationVector = new Vector3(startRotation.x, startRotation.y, 0);
+        Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
+
+        //Apply the rotation
+        transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
+        
+    }
     void Eat(BoidBehavior boid)
     {
         chatBubble.playEmote(ChatBubble.EmoteType.Happy);
@@ -553,12 +570,14 @@ public class BoidBehavior : MonoBehaviour
         Quaternion startRotation = transform.rotation;
         Vector3 rotationVector = new Vector3(0, Random.Range(-deviateRange,deviateRange) ,0 );
         Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
+
         while (elapsedTime < .5f)
         {
             transform.rotation = Quaternion.Slerp(startRotation, targetRotation, elapsedTime / 0.5f);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
         isDeviating = false;
     }
 
@@ -572,8 +591,12 @@ public class BoidBehavior : MonoBehaviour
             yield return null;
         }
 
-        isHungry = true;
-        chatBubble.playEmote(ChatBubble.EmoteType.Hungry);
+        if (!isDead) 
+        {
+            isHungry = true;
+            chatBubble.playEmote(ChatBubble.EmoteType.Hungry);
+        }
+
     }
     IEnumerator Decompose()
     {
@@ -583,6 +606,9 @@ public class BoidBehavior : MonoBehaviour
         while (scale >= 0f)
         {
             scale -= 0.005f;
+            
+            //We are not using SetScale() here because that only effects the currentMesh. We want to shrink the whole prefab.
+
             transform.localScale -= new Vector3(0.005f, 0.005f, 0.005f);
 
             yield return null;
@@ -591,3 +617,6 @@ public class BoidBehavior : MonoBehaviour
         Destroy(this.gameObject);
     }
 }
+
+
+//consider vector fields
