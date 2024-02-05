@@ -15,6 +15,7 @@ public class ChatBubble : MonoBehaviour
         Angry,
         Hungry,
         Dead,
+        Scared,
     }
 
     [SerializeField] private Sprite happyEmote;
@@ -22,6 +23,7 @@ public class ChatBubble : MonoBehaviour
     [SerializeField] private Sprite angryEmote;
     [SerializeField] private Sprite hungryEmote;
     [SerializeField] private Sprite deadEmote;
+    [SerializeField] private Sprite scaredEmote;
 
     private void Awake()
     {
@@ -51,6 +53,7 @@ public class ChatBubble : MonoBehaviour
             case EmoteType.Angry: return angryEmote;
             case EmoteType.Hungry: return hungryEmote;
             case EmoteType.Dead: return deadEmote;
+            case EmoteType.Scared: return scaredEmote;
         }
     }
 

@@ -28,13 +28,15 @@ public class BoidBehavior : MonoBehaviour
     private GameObject currentMesh;      // When we instantiate a mesh to the fish, THAT INSTANCE will be stored here.
     private Vector3 foodTarget;          // This is where we are storing the current prey target, if there is one
     private float currentSpeed;          // Storing the current movement speed to use in Swim();
+    private Vector3 predatorDistance;
 
     [Header("Bool States")]
     public bool isHungry = false;        // Trigger for ApplyHuntingBehavior(). Set by the COROUTUNE EncroachingHunger()
     public bool isSchooling = true;      // Trigger for ApplySchoolingBehavior(). Currently this is always true
     public bool foundFood = false;       // When using ApplyHuntingHehavior(), the fish is using DetectFood(). If a neighbor is found with a lower foodScore, this is the trigger to start the hunt.
     public bool isDead = false;          // A dead fish is a fish with no scriptable object. Currently called by other attacking fish when they Eat()
-    public bool isDeviating = false;
+    public bool isDeviating = false;     // Decides when a fish will make random micro movements for realstic wandering.
+    public bool isBeingHunted = false;   // Trigger for ApplyEscapeBehavior(). Set by the predator fish's ApplyHuntingBehavior().
 
     public delegate void OnDeath();
     public static OnDeath onDeath;
@@ -120,6 +122,11 @@ public class BoidBehavior : MonoBehaviour
             if (isHungry)
             {
                 ApplyHuntingBehavior();
+            }
+
+            if (isBeingHunted && predatorDistance.magnitude < perceptionRadius)
+            {
+                ApplyEscapeBehavior();
             }
 
             if(neighbors == null || neighbors.Count <= 0 && !isHungry)
@@ -350,14 +357,18 @@ public class BoidBehavior : MonoBehaviour
 
         if (foundFood)
         {
+
             currentSpeed = swimHuntSpeed;
             transform.LookAt(target.transform.position);
 
             Vector3 toTarget = transform.position - target.transform.position;
 
+            BoidBehavior targetBoid = target.GetComponent<BoidBehavior>();
+            targetBoid.isBeingHunted = true;
+            targetBoid.predatorDistance = toTarget;
+
             if (toTarget.magnitude <= biteRange)
             {
-                BoidBehavior targetBoid = target.GetComponent<BoidBehavior>();
                 Eat(targetBoid);
             }
         }
@@ -376,6 +387,11 @@ public class BoidBehavior : MonoBehaviour
         //Apply the rotation
         transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
         
+    }
+    void ApplyEscapeBehavior()
+    {
+        chatBubble.playEmote(ChatBubble.EmoteType.Scared);
+        //FUCKING RUN, DOG! THERES A FISH THATS GONNA EAT YO ASS
     }
     void Eat(BoidBehavior boid)
     {
@@ -617,6 +633,3 @@ public class BoidBehavior : MonoBehaviour
         Destroy(this.gameObject);
     }
 }
-
-
-//consider vector fields
