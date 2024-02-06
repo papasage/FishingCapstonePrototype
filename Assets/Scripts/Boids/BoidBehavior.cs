@@ -27,7 +27,7 @@ public class BoidBehavior : MonoBehaviour
     private List<GameObject> neighbors;  // This List is used determine what boids are closest on the "boid" List. Used in ApplySchoolingBehavior().
     private GameObject currentMesh;      // When we instantiate a mesh to the fish, THAT INSTANCE will be stored here.
     private Vector3 foodTarget;          // This is where we are storing the current prey target, if there is one
-    private float currentSpeed;          // Storing the current movement speed to use in Swim();
+    private float currentSpeed;          // Storing the current movement speed to use in ApplySwimBehavior();
     private Vector3 predatorDistance;
 
     [Header("Bool States")]
@@ -37,6 +37,7 @@ public class BoidBehavior : MonoBehaviour
     public bool isDead = false;          // A dead fish is a fish with no scriptable object. Currently called by other attacking fish when they Eat()
     public bool isDeviating = false;     // Decides when a fish will make random micro movements for realstic wandering.
     public bool isBeingHunted = false;   // Trigger for ApplyEscapeBehavior(). Set by the predator fish's ApplyHuntingBehavior().
+    public bool isHooked = false;        // Trigger for ApplyHookedBehavior().
 
     public delegate void OnDeath();
     public static OnDeath onDeath;
@@ -49,8 +50,9 @@ public class BoidBehavior : MonoBehaviour
     private GameObject mesh;             // This is the data for the mesh we want to become. Filled by a scriptable object.
     
     [Header("Ability Stats")]
-    private float swimSpeed;             // This is the speed they move forward with Swim()
-    private float swimHuntSpeed;         // This is the speed they move forward with Swim() while hunting
+    private float swimSpeed;             // This is the speed they move forward with ApplySwimBehavior()
+    private float swimHuntSpeed;         // This is the speed they move forward with ApplySwimBehavior() while hunting
+    private float swimEscapeSpeed;       // This is the speed they move forward with ApplySwimBehavior() while escaping
     private float deviateRange;          // When deviating, the rotation is a random rotation between a negative and positive of this value. 
     private float deviateChance;          // Chance to deviate out of 100
     private float perceptionRadius;      // If another boid enters this range, it becomes a neighbor
@@ -109,9 +111,9 @@ public class BoidBehavior : MonoBehaviour
 
         if (!isDead)
         {
-            Swim();
+            ApplySwimBehavior();
             currentSpeed = swimSpeed;
-            AvoidObstacle();
+            ApplyObstacleAvoidanceBehavior();
             ApplyUprightBehavior();
 
             if (isSchooling)
@@ -132,6 +134,11 @@ public class BoidBehavior : MonoBehaviour
             if(neighbors == null || neighbors.Count <= 0 && !isHungry)
             {
                 ApplyDeviateBehavior(); 
+            }
+
+            if(isHooked)
+            {
+                ApplyHookedBehavior();
             }
 
         }
@@ -205,6 +212,7 @@ public class BoidBehavior : MonoBehaviour
             //ABILITY STATS
             swimSpeed = fish.swimSpeed;
             swimHuntSpeed = fish.swimHuntSpeed;
+            swimEscapeSpeed = fish.swimEscapeSpeed;
             deviateRange = fish.deviateRange;
             deviateChance = fish.deviateChance;
             perceptionRadius = fish.perceptionRadius;
@@ -269,7 +277,7 @@ public class BoidBehavior : MonoBehaviour
     void GetAllBoids()
     {    
         boids = new List<GameObject>(GameObject.FindObjectsOfType<BoidBehavior>().Select(boid => boid.gameObject));
-        Debug.Log("Boids Initialized! Found Boids: " + boids.Count);
+        //Debug.Log("Boids Initialized! Found Boids: " + boids.Count);
     }
     void ShuffleBoid()
     {
@@ -290,7 +298,7 @@ public class BoidBehavior : MonoBehaviour
         GetAllBoids();
         StartCoroutine(Decompose());
     }
-    void Swim()
+    void ApplySwimBehavior()
     {
         Vector3 normalForward = transform.forward * currentSpeed;
         rb.velocity += normalForward * Time.deltaTime;
@@ -304,7 +312,7 @@ public class BoidBehavior : MonoBehaviour
             StartCoroutine(DeviateCoroutine());
         }
     }
-    void AvoidObstacle()
+    void ApplyObstacleAvoidanceBehavior()
     {
         RaycastHit hit;
 
@@ -391,17 +399,34 @@ public class BoidBehavior : MonoBehaviour
     void ApplyEscapeBehavior()
     {
         chatBubble.playEmote(ChatBubble.EmoteType.Scared);
-        //FUCKING RUN, DOG! THERES A FISH THATS GONNA EAT YO ASS
+        
+        //run!
+        currentSpeed = swimEscapeSpeed;
+        
+        //Reset the hunger timer
+        //StartCoroutine(EncroachingHunger());
+    }
+    void ApplyHookedBehavior()
+    {
+        chatBubble.playEmote(ChatBubble.EmoteType.Hooked);
     }
     void Eat(BoidBehavior boid)
     {
         chatBubble.playEmote(ChatBubble.EmoteType.Happy);
-        boid.Die();
+
         isHungry = false;
         StartCoroutine(EncroachingHunger());
+
         foodScore++;
         sizeMultiplier+=.5f;
         SetSize(sizeMultiplier);
+
+        if (boid.isHooked == true)
+        {
+            isHooked = true;
+        }
+
+        boid.Die();
     }
     void SetSize(float size)
     {

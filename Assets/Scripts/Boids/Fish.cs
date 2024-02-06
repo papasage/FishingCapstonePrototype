@@ -9,8 +9,9 @@ public class Fish : ScriptableObject
     public GameObject mesh;                         // The artwork object that will be spawned to represent the fish
 
     [Header("Ability Stats")]
-    public float swimSpeed = 26.3f;                 // This is the speed they move forward with Swim();
-    public float swimHuntSpeed = 35f;               // This is the speed they move forward with Swim(); while hunting
+    public float swimSpeed = 26.3f;                 // This is the speed they move forward with ApplySwimBehavior();
+    public float swimHuntSpeed = 35f;               // This is the speed they move forward with ApplySwimBehavior(); while hunting
+    public float swimEscapeSpeed = 33f;       // This is the speed they move forward with ApplySwimBehavior() while escaping
     public float deviateRange = 10f;                // When deviating, the rotation is a random rotation between a negative and positive of this value. 
     public float deviateChance = 5f;                // Chance to deviate out of 100
     public float perceptionRadius = 5.5f;           // If another boid enters this range, it becomes a neighbor
