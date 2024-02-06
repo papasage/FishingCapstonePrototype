@@ -203,7 +203,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f5916ad80a32e7c4d86830b7f6e9914c, type: 2}
   - {fileID: 11400000, guid: fa31c2242fcd75a4db33db2690057fae, type: 2}
   - {fileID: 11400000, guid: a67113ecfe360ea4ab9a8ee99d7edc79, type: 2}
-  - {fileID: 11400000, guid: 564e8ab1b5586434d9ee3dae1d715d37, type: 2}
   - {fileID: 11400000, guid: 2953a31e5aac8fa4e97e2f2e39cda341, type: 2}
   obstacleLayer:
     serializedVersion: 2
@@ -214,6 +213,7 @@ MonoBehaviour:
   isDead: 0
   isDeviating: 0
   isBeingHunted: 0
+  isHooked: 0
 --- !u!1 &4751844855845049991
 GameObject:
   m_ObjectHideFlags: 0

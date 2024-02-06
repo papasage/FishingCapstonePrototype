@@ -128,6 +128,7 @@ MonoBehaviour:
   deadEmote: {fileID: 21300000, guid: 75109f94fdbe24542bdb7a2951a1ed8b, type: 3}
   scaredEmote: {fileID: 21300000, guid: cc4a24f532e1e164580d3a2a72ed3110, type: 3}
   hookedEmote: {fileID: 21300000, guid: 5ffda38bcd31c964ebe6600eeb37b6bd, type: 3}
+  oldEmote: {fileID: 21300000, guid: 94d5fc912b88c36429b687d0a2b9260a, type: 3}
 --- !u!114 &5598595228391903746
 MonoBehaviour:
   m_ObjectHideFlags: 0

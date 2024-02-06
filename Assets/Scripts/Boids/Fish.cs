@@ -11,7 +11,7 @@ public class Fish : ScriptableObject
     [Header("Ability Stats")]
     public float swimSpeed = 26.3f;                 // This is the speed they move forward with ApplySwimBehavior();
     public float swimHuntSpeed = 35f;               // This is the speed they move forward with ApplySwimBehavior(); while hunting
-    public float swimEscapeSpeed = 33f;       // This is the speed they move forward with ApplySwimBehavior() while escaping
+    public float swimEscapeSpeed = 33f;             // This is the speed they move forward with ApplySwimBehavior() while escaping
     public float deviateRange = 10f;                // When deviating, the rotation is a random rotation between a negative and positive of this value. 
     public float deviateChance = 5f;                // Chance to deviate out of 100
     public float perceptionRadius = 5.5f;           // If another boid enters this range, it becomes a neighbor
@@ -20,6 +20,7 @@ public class Fish : ScriptableObject
 
     [Header("Food Stats")]
     public float foodScore = 1f;                    // Rename this to Predator Score. The Higher the number, the larger the fish they can eat
+    public float foodScoreMax = 4f;                 // This is the maximum foodScore that the fish can hit before they begin to die of old age.
     public float minSizeMultiplier = 0.5f;          // The minimum possible factor for size generation
     public float maxSizeMultiplier = 1.5f;          // The maximum possible factor for size generation
     public float hungerWeight = 1f;                 // TODO: The factor for how aggressively the fish will move towards prey. x1 is default movement speed.

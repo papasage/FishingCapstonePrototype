@@ -61,6 +61,7 @@ public class BoidBehavior : MonoBehaviour
 
     [Header("Food Stats")]
     private float foodScore;             // Food chain placement. Fish can only eat fish with lower foodScores.
+    private float foodScoreMax;          // This is the maximum foodScore that the fish can hit before they begin to die of old age.
     private float scoreDifferenceThreshold = 1.5f; // this is the amount that your foodScore has to be greater by in order to eat another fish.
     private float sizeMultiplier;        // Genetic lottery. Randomly rolled on birth from a range set by that fish's breed (in scriptable object)
     private float hungerWeight;          // UNUSED: Potentially increases the aggression/speed of the fish over time as they get hungry.
@@ -107,8 +108,6 @@ public class BoidBehavior : MonoBehaviour
     
     void Update()
     {
-
-
         if (!isDead)
         {
             ApplySwimBehavior();
@@ -222,6 +221,7 @@ public class BoidBehavior : MonoBehaviour
             //FOOD STATS
             sizeMultiplier = Random.Range(fish.minSizeMultiplier,fish.maxSizeMultiplier);
             foodScore = fish.foodScore * sizeMultiplier;
+            foodScoreMax = fish.foodScoreMax;
             hungerWeight = fish.hungerWeight;
             hungryInSeconds = fish.hungryInSeconds;
             biteRange = fish.biteRange;
@@ -427,6 +427,11 @@ public class BoidBehavior : MonoBehaviour
         }
 
         boid.Die();
+
+        if (foodScore >= foodScoreMax)
+        {
+            StartCoroutine(EncroachingAge());
+        }
     }
     void SetSize(float size)
     {
@@ -636,6 +641,26 @@ public class BoidBehavior : MonoBehaviour
         {
             isHungry = true;
             chatBubble.playEmote(ChatBubble.EmoteType.Hungry);
+        }
+
+    }
+    IEnumerator EncroachingAge()
+    {
+        StopAllCoroutines();
+        chatBubble.playEmote(ChatBubble.EmoteType.Old);
+        isHungry = false;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 70f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!isDead)
+        {
+            Die();
         }
 
     }

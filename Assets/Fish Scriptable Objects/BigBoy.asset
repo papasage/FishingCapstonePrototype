@@ -15,12 +15,14 @@ MonoBehaviour:
   mesh: {fileID: 919132149155446097, guid: eb36cb17bab61654ebc1ae0f540a0346, type: 3}
   swimSpeed: 10
   swimHuntSpeed: 35
+  swimEscapeSpeed: 33
   deviateRange: 6.94
   deviateChance: 4.78
   perceptionRadius: 9.35
   avoidanceRadius: 5
   avoidanceSeconds: 2
   foodScore: 5
+  foodScoreMax: 7
   minSizeMultiplier: 0.8
   maxSizeMultiplier: 1.5
   hungerWeight: 1
