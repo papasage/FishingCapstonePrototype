@@ -10,27 +10,30 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
-  m_Name: BaitTest
+  m_Name: Lure1
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: b64d93c618c890848b75eff69295a7d3, type: 3}
+  mesh: {fileID: 919132149155446097, guid: bc60bc4de74414640ad6010d332fc543, type: 3}
+  isLure: 1
   swimSpeed: 0
   swimHuntSpeed: 0
+  swimEscapeSpeed: 0
   deviateRange: 0
   deviateChance: 0
   perceptionRadius: 0
   avoidanceRadius: 0
-  avoidanceSeconds: 0
+  avoidanceSeconds: 1.5
   foodScore: 1
-  minSizeMultiplier: 1
-  maxSizeMultiplier: 1
+  foodScoreMax: 100
+  minSizeMultiplier: 3
+  maxSizeMultiplier: 3
   hungerWeight: 1
-  hungryInSeconds: -1
-  biteRange: 0
+  hungryInSeconds: 30
+  biteRange: 0.1
   decompositionTime: 5
   cohesionWeight: 0
   separationWeight: 0
   alignmentWeight: 0
   alignmentSpeed: 0
-  maidenName: 
-  favoriteSong: 
-  luckyNumber: 0
+  maidenName: Pinkie
+  favoriteSong: 'Nocturnes, Op. 9: No. 1 in B-Flat Minor - Chopin'
+  luckyNumber: 4

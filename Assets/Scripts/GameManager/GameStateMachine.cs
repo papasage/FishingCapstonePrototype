@@ -77,4 +77,40 @@ public class GameStateMachine : StateMachine
             ChangeState(ScoringState);
         }
     }
+
+    public void Idle()
+    {
+        ChangeState(IdleState);
+    }
+
+    public void Casting()
+    {
+        ChangeState(CastingState);
+    }
+
+    public void Casted()
+    {
+        ChangeState(CastedState);
+    }
+
+    public void Bite()
+    {
+        ChangeState(BiteState);
+    }
+    public void Reeling()
+    {
+        ChangeState(ReelingState);
+    }
+    public void Landing()
+    {
+        ChangeState(LandingState);
+    }
+    public void Fighting()
+    {
+        ChangeState(FightingState);
+    }
+    public void Scoring()
+    {
+        ChangeState(ScoringState);
+    }
 }

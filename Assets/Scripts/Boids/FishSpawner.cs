@@ -47,7 +47,7 @@ public class FishSpawner : MonoBehaviour
 
     void SpawnFish()
     {
-        Instantiate(fishPrefab, spawnLocation.transform.position, Quaternion.identity);
+        Instantiate(fishPrefab, spawnLocation.transform.position, Quaternion.identity, GameObject.Find("[FISH SPAWNER]").transform);
         onSpawn();
     }
 

@@ -9,6 +9,7 @@ public class Fish : ScriptableObject
     public GameObject mesh;                         // The artwork object that will be spawned to represent the fish
 
     [Header("Ability Stats")]
+    public bool isLure = false;          // Applied by special lure scriptable objects. Lures are boids so that they can be seen and hunted, but they don't swim/school/hunt/escape
     public float swimSpeed = 26.3f;                 // This is the speed they move forward with ApplySwimBehavior();
     public float swimHuntSpeed = 35f;               // This is the speed they move forward with ApplySwimBehavior(); while hunting
     public float swimEscapeSpeed = 33f;             // This is the speed they move forward with ApplySwimBehavior() while escaping

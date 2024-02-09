@@ -200,6 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fish: {fileID: 0}
   allFish:
+  - {fileID: 11400000, guid: 4a98e0cf409eb1248806942de13656df, type: 2}
   - {fileID: 11400000, guid: f5916ad80a32e7c4d86830b7f6e9914c, type: 2}
   - {fileID: 11400000, guid: fa31c2242fcd75a4db33db2690057fae, type: 2}
   - {fileID: 11400000, guid: a67113ecfe360ea4ab9a8ee99d7edc79, type: 2}

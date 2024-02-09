@@ -29,15 +29,21 @@ public class BoidBehavior : MonoBehaviour
     private Vector3 foodTarget;          // This is where we are storing the current prey target, if there is one
     private float currentSpeed;          // Storing the current movement speed to use in ApplySwimBehavior();
     private Vector3 predatorDistance;
+    private GameObject hook;
+    private GameObject fishingRod;
+
 
     [Header("Bool States")]
+    
     public bool isHungry = false;        // Trigger for ApplyHuntingBehavior(). Set by the COROUTUNE EncroachingHunger()
     public bool isSchooling = true;      // Trigger for ApplySchoolingBehavior(). Currently this is always true
     public bool foundFood = false;       // When using ApplyHuntingHehavior(), the fish is using DetectFood(). If a neighbor is found with a lower foodScore, this is the trigger to start the hunt.
     public bool isDead = false;          // A dead fish is a fish with no scriptable object. Currently called by other attacking fish when they Eat()
     public bool isDeviating = false;     // Decides when a fish will make random micro movements for realstic wandering.
-    public bool isBeingHunted = false;   // Trigger for ApplyEscapeBehavior(). Set by the predator fish's ApplyHuntingBehavior().
+    public bool isBeingHunted = false;   // Trigger for Panic. Set by the predator fish's ApplyHuntingBehavior().
+    public bool isPanicking = false;     // This is checked before the Panic coroutine is fired. If it is panicking, dont try to set it again.
     public bool isHooked = false;        // Trigger for ApplyHookedBehavior().
+    public bool isHookSet = false;      // This is checked before the SetHook coroutine is fired. If it is set, dont try to set it again.
 
     public delegate void OnDeath();
     public static OnDeath onDeath;
@@ -50,6 +56,7 @@ public class BoidBehavior : MonoBehaviour
     private GameObject mesh;             // This is the data for the mesh we want to become. Filled by a scriptable object.
     
     [Header("Ability Stats")]
+    public bool isLure;          // Applied by special lure scriptable objects. Lures are boids so that they can be seen and hunted, but they don't swim/school/hunt/escape
     private float swimSpeed;             // This is the speed they move forward with ApplySwimBehavior()
     private float swimHuntSpeed;         // This is the speed they move forward with ApplySwimBehavior() while hunting
     private float swimEscapeSpeed;       // This is the speed they move forward with ApplySwimBehavior() while escaping
@@ -97,7 +104,12 @@ public class BoidBehavior : MonoBehaviour
         //initialize the list of all boids in the pond
         GetAllBoids();
         //Start the hunger clock
-        StartCoroutine(EncroachingHunger());
+        
+        if (!isLure)
+        {
+            StartCoroutine(EncroachingHunger());
+        }
+
     }
 
     private void OnEnable()
@@ -108,29 +120,33 @@ public class BoidBehavior : MonoBehaviour
     
     void Update()
     {
-        if (!isDead)
+        if (!isDead && !isLure)
         {
             ApplySwimBehavior();
             currentSpeed = swimSpeed;
             ApplyObstacleAvoidanceBehavior();
             ApplyUprightBehavior();
 
-            if (isSchooling)
+            if (isSchooling && !isLure && !isHooked)
             {
                 ApplySchoolingBehavior();
             }
 
-            if (isHungry)
+            if (isHungry && !isLure && !isHooked)
             {
                 ApplyHuntingBehavior();
             }
 
-            if (isBeingHunted && predatorDistance.magnitude < perceptionRadius)
+            if (isBeingHunted && predatorDistance.magnitude < perceptionRadius && !isLure && !isHooked)
             {
-                ApplyEscapeBehavior();
+                if (!isPanicking)
+                {
+                    StartCoroutine(PanicCoroutine());
+                }
+                
             }
 
-            if(neighbors == null || neighbors.Count <= 0 && !isHungry)
+            if(neighbors == null || neighbors.Count <= 0 && !isHungry && !isLure && !isHooked)
             {
                 ApplyDeviateBehavior(); 
             }
@@ -192,7 +208,10 @@ public class BoidBehavior : MonoBehaviour
         // Find your rigidbody
         rb = GetComponent<Rigidbody>();
         // ensure we are not using gravity, because we only enable it for a dead fish
-        rb.useGravity = false;
+
+            rb.useGravity = false;
+        
+        
         // Find the name tag object on the prefab
         //label = GetComponentInChildren<TMP_Text>();
 
@@ -207,8 +226,9 @@ public class BoidBehavior : MonoBehaviour
         {
             // ART
             mesh = fish.mesh;
-          
+
             //ABILITY STATS
+            isLure = fish.isLure;
             swimSpeed = fish.swimSpeed;
             swimHuntSpeed = fish.swimHuntSpeed;
             swimEscapeSpeed = fish.swimEscapeSpeed;
@@ -290,6 +310,11 @@ public class BoidBehavior : MonoBehaviour
     }
     void Die()
     {
+        if (isLure)
+        {
+            Destroy(this.gameObject);
+        }
+
         fish = null;
         isDead = true;
         onDeath(); //Call out the death event
@@ -365,7 +390,6 @@ public class BoidBehavior : MonoBehaviour
 
         if (foundFood)
         {
-
             currentSpeed = swimHuntSpeed;
             transform.LookAt(target.transform.position);
 
@@ -396,19 +420,33 @@ public class BoidBehavior : MonoBehaviour
         transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
         
     }
-    void ApplyEscapeBehavior()
-    {
-        chatBubble.playEmote(ChatBubble.EmoteType.Scared);
-        
-        //run!
-        currentSpeed = swimEscapeSpeed;
-        
-        //Reset the hunger timer
-        //StartCoroutine(EncroachingHunger());
-    }
     void ApplyHookedBehavior()
     {
-        chatBubble.playEmote(ChatBubble.EmoteType.Hooked);
+        if (!isHookSet)
+        {
+            SetTheHook();
+        }
+        
+        if (fishingRod != null)
+        {
+            //Move away from the fishing rod!
+            transform.LookAt( - fishingRod.transform.position );
+        }
+    }
+    void SetTheHook()
+    {
+        if (!isLure)
+        {
+            chatBubble.playEmote(ChatBubble.EmoteType.Hooked);
+        }
+
+        isHookSet = true;
+        hook = GameObject.Find("Hook");
+        transform.position = hook.transform.position;
+        hook.GetComponent<FixedJoint>().connectedBody = rb;
+
+        fishingRod = GameObject.Find("FishingRod");
+
     }
     void Eat(BoidBehavior boid)
     {
@@ -572,6 +610,13 @@ public class BoidBehavior : MonoBehaviour
 
         foreach (GameObject neighbor in neighbors)
         {
+            if (neighbor.GetComponent<BoidBehavior>().isLure)
+            {
+                foundFood = true;
+                target = neighbor;
+                Debug.DrawLine(transform.position, target.transform.position, Color.red);
+                break;
+            }
             //Check if the food score is lower than yours, but not below zero (dead)
             if (neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
             {
@@ -627,6 +672,27 @@ public class BoidBehavior : MonoBehaviour
         isDeviating = false;
     }
 
+    IEnumerator PanicCoroutine()
+    {
+        chatBubble.playEmote(ChatBubble.EmoteType.Scared);
+        currentSpeed = swimEscapeSpeed;
+        isPanicking = true;
+        isHungry = false;
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 10f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        isPanicking = false;
+        currentSpeed = swimSpeed;
+        StartCoroutine(EncroachingHunger());
+
+        
+    }
     IEnumerator EncroachingHunger()
     {
         float elapsedTime = 0f;
@@ -646,7 +712,6 @@ public class BoidBehavior : MonoBehaviour
     }
     IEnumerator EncroachingAge()
     {
-        StopAllCoroutines();
         chatBubble.playEmote(ChatBubble.EmoteType.Old);
         isHungry = false;
 

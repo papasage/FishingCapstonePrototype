@@ -7,13 +7,13 @@ using System.Linq;
 
 public class UIController : MonoBehaviour
 {
-    [Header("Required Components")]
-    [SerializeField] Image UIStateSprite;
-    [SerializeField] TMP_Text UIStateText;
+    [Header("Boid Counter Data")]
     [SerializeField] TMP_Text UIBoidCountText;
     private List<GameObject> boids;
 
-    [Header("UI State Icons")]
+    [Header("State Tracker Data")]
+    [SerializeField] TMP_Text UIStateText;
+    [SerializeField] Image UIStateSprite;
     [SerializeField] Sprite _stateIdle;
     [SerializeField] Sprite _stateCasting;
     [SerializeField] Sprite _stateCasted;
@@ -22,6 +22,14 @@ public class UIController : MonoBehaviour
     [SerializeField] Sprite _stateLanding;
     [SerializeField] Sprite _stateFighting;
     [SerializeField] Sprite _stateScoring;
+
+    [Header("Fishing Line Tension Data")]
+    [SerializeField] SpringJoint RodToBobber;
+    [SerializeField] SpringJoint BobberToHook;
+    [SerializeField] TMP_Text RTBForce;
+    [SerializeField] TMP_Text RTBTorque;
+    [SerializeField] TMP_Text BTHForce;
+    [SerializeField] TMP_Text BTHTorque;
 
     private void OnEnable()
     {
@@ -41,6 +49,14 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         UpdateBoidCount();
+    }
+
+    private void Update()
+    {
+        RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+        RTBTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
+        BTHForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+        BTHTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
     }
 
     void UpdateBoidCount()
@@ -97,11 +113,11 @@ public class UIController : MonoBehaviour
     void UIFighting()
     {
         UIStateSprite.sprite = _stateFighting;
-        UIStateText.text = "Fighting";
+        UIStateText.text = "Caught!";
     }
     void UIScoring()
     {
         UIStateSprite.sprite = _stateScoring;
-        UIStateText.text = "Scoring";
+        UIStateText.text = "Shop";
     }
 }
