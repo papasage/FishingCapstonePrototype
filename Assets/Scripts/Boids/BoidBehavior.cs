@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 using TMPro;
@@ -30,7 +31,7 @@ public class BoidBehavior : MonoBehaviour
     private float currentSpeed;          // Storing the current movement speed to use in ApplySwimBehavior();
     private Vector3 predatorDistance;
     private GameObject hook;
-    private GameObject fishingRod;
+    private FishingRod fishingRod;
 
 
     [Header("Bool States")]
@@ -53,40 +54,40 @@ public class BoidBehavior : MonoBehaviour
     //
 
     [Header("Artwork")]
-    private GameObject mesh;             // This is the data for the mesh we want to become. Filled by a scriptable object.
+    public GameObject mesh;             // This is the data for the mesh we want to become. Filled by a scriptable object.
     
     [Header("Ability Stats")]
     public bool isLure;          // Applied by special lure scriptable objects. Lures are boids so that they can be seen and hunted, but they don't swim/school/hunt/escape
-    private float swimSpeed;             // This is the speed they move forward with ApplySwimBehavior()
-    private float swimHuntSpeed;         // This is the speed they move forward with ApplySwimBehavior() while hunting
-    private float swimEscapeSpeed;       // This is the speed they move forward with ApplySwimBehavior() while escaping
-    private float deviateRange;          // When deviating, the rotation is a random rotation between a negative and positive of this value. 
-    private float deviateChance;          // Chance to deviate out of 100
-    private float perceptionRadius;      // If another boid enters this range, it becomes a neighbor
-    private float avoidanceRadius;       // The distance it takes to react to an obstacle TODO:Check the neighbor list for threats and react when they get in this range
-    private float avoidanceSeconds;      // The amount of time in seconds it takes to complete an avoidance
+    public float swimSpeed;             // This is the speed they move forward with ApplySwimBehavior()
+    public float swimHuntSpeed;         // This is the speed they move forward with ApplySwimBehavior() while hunting
+    public float swimEscapeSpeed;       // This is the speed they move forward with ApplySwimBehavior() while escaping
+    public float deviateRange;          // When deviating, the rotation is a random rotation between a negative and positive of this value. 
+    public float deviateChance;          // Chance to deviate out of 100
+    public float perceptionRadius;      // If another boid enters this range, it becomes a neighbor
+    public float avoidanceRadius;       // The distance it takes to react to an obstacle TODO:Check the neighbor list for threats and react when they get in this range
+    public float avoidanceSeconds;      // The amount of time in seconds it takes to complete an avoidance
 
     [Header("Food Stats")]
-    private float foodScore;             // Food chain placement. Fish can only eat fish with lower foodScores.
-    private float foodScoreMax;          // This is the maximum foodScore that the fish can hit before they begin to die of old age.
-    private float scoreDifferenceThreshold = 1.5f; // this is the amount that your foodScore has to be greater by in order to eat another fish.
-    private float sizeMultiplier;        // Genetic lottery. Randomly rolled on birth from a range set by that fish's breed (in scriptable object)
-    private float hungerWeight;          // UNUSED: Potentially increases the aggression/speed of the fish over time as they get hungry.
-    private float hungryInSeconds;       // The amount of time in seconds it takes to become hungry
-    private float biteRange;             // Range a fish must be to Eat() another fish when hunting. 
-    private float decompositionTime;     // Variable for how long it takes to start decomposition
+    public float foodScore;             // Food chain placement. Fish can only eat fish with lower foodScores.
+    public float foodScoreMax;          // This is the maximum foodScore that the fish can hit before they begin to die of old age.
+    public float scoreDifferenceThreshold = 1.5f; // this is the amount that your foodScore has to be greater by in order to eat another fish.
+    public float sizeMultiplier;        // Genetic lottery. Randomly rolled on birth from a range set by that fish's breed (in scriptable object)
+    public float hungerWeight;          // UNUSED: Potentially increases the aggression/speed of the fish over time as they get hungry.
+    public float hungryInSeconds;       // The amount of time in seconds it takes to become hungry
+    public float biteRange;             // Range a fish must be to Eat() another fish when hunting. 
+    public float decompositionTime;     // Variable for how long it takes to start decomposition
     //public float avoidSpeed;
 
     [Header("Schooling Behavior Stats")]
-    private float cohesionWeight;        // Stat for prioritising cohesion. The desire to be in the center of your neighbors. 1 = 100%
-    private float separationWeight;      // Stat for prioritising seperation. The desire to need space from your neighbors. 1 = 100%
-    private float alignmentWeight;       // Stat for prioritising alignment. The desire to face the same direction as your neighbors. 1 = 100%
-    private float alignmentSpeed;        // How hard will the boid make alignment adjustments. The actual aligning occurs in the calculation method for reasons.
+    public float cohesionWeight;        // Stat for prioritising cohesion. The desire to be in the center of your neighbors. 1 = 100%
+    public float separationWeight;      // Stat for prioritising seperation. The desire to need space from your neighbors. 1 = 100%
+    public float alignmentWeight;       // Stat for prioritising alignment. The desire to face the same direction as your neighbors. 1 = 100%
+    public float alignmentSpeed;        // How hard will the boid make alignment adjustments. The actual aligning occurs in the calculation method for reasons.
 
     [Header("Fish Facts")]               // This is just silly scriptable object test data (for now)
-    private string maidenName;           // UNUSED
-    private string favoriteSong;         // UNUSED
-    private int luckyNumber;             // UNUSED
+    public string maidenName;           // UNUSED
+    public string favoriteSong;         // UNUSED
+    public int luckyNumber;             // UNUSED
 
     ////////////////////////////////////////////////////////////////////
     //RUNTIME
@@ -179,6 +180,11 @@ public class BoidBehavior : MonoBehaviour
         if (Input.GetKeyDown("d"))
         {
             StartCoroutine(DeviateCoroutine());
+        }
+
+        if (Input.GetKeyDown("j"))
+        {
+            //SaveFish();
         }
     }
 
@@ -431,6 +437,11 @@ public class BoidBehavior : MonoBehaviour
         {
             //Move away from the fishing rod!
             transform.LookAt( - fishingRod.transform.position );
+            
+            if (fishingRod.isReeled)
+            {
+                Land(this);
+            }
         }
     }
     void SetTheHook()
@@ -445,8 +456,15 @@ public class BoidBehavior : MonoBehaviour
         transform.position = hook.transform.position;
         hook.GetComponent<FixedJoint>().connectedBody = rb;
 
-        fishingRod = GameObject.Find("FishingRod");
+        fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
+        fishingRod.hookHasFish = true;
 
+    }
+    void Land(BoidBehavior caught)
+    {
+        fishingRod.Catch(caught);
+        fishingRod.hookHasFish = false;
+        Destroy(this.gameObject);
     }
     void Eat(BoidBehavior boid)
     {
@@ -630,6 +648,14 @@ public class BoidBehavior : MonoBehaviour
 
         return target;
     }
+
+    /*
+    void SaveFish()
+    {
+        string json = JsonUtility.ToJson(this);
+        File.WriteAllText(Application.dataPath + "savedFish.json", json);
+    }
+    */
 
     ////////////////////////////////////////////////////////////////////
     //COROUTINES

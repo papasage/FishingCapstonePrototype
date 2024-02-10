@@ -9,6 +9,7 @@ public class FishingRod : MonoBehaviour
     GameObject bobber; //the bobber is what is controlling the line renderers and gets launched on cast
     Floater floater; //the floater is the part of the bobber that helps it float. 
     GameObject hook;
+    BoidBehavior caughtFish;
 
     [Header("Casting")]
     public float launchForce = 1f;
@@ -31,7 +32,7 @@ public class FishingRod : MonoBehaviour
     public bool isReeled;
     public bool isCasting;
     public bool isCasted;
-    public bool hookSet;
+    public bool hookHasFish;
     public bool bobberFloating;
 
 
@@ -54,6 +55,7 @@ public class FishingRod : MonoBehaviour
 
         isReeled = true;
         isCasted = false;
+        hookHasFish = false;
     }
 
     // Update is called once per frame
@@ -71,8 +73,17 @@ public class FishingRod : MonoBehaviour
 
         if (rodToBobberString.maxDistance == 0)
         {
-            isReeled = true;
-            isCasted = false;
+            if (!isReeled)
+            {
+                isReeled = true;
+                isCasted = false;
+
+                if(!hookHasFish)
+                {
+                    gamestate.Idle();
+                }
+            }
+
         }
 
         if (floater.isFloating == true)
@@ -121,5 +132,11 @@ public class FishingRod : MonoBehaviour
             audioReeling.Play();
             rodToBobberString.maxDistance -= strength;
         }
+    }
+
+    public void Catch(BoidBehavior caught)
+    {
+        caughtFish = caught;
+        gamestate.Landing(caughtFish);
     }
 }

@@ -11307,6 +11307,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 412738737}
   m_CullTransparentMesh: 1
+--- !u!1 &416005404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 416005408}
+  - component: {fileID: 416005409}
+  m_Layer: 0
+  m_Name: CaughtFishDisplayObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &416005408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 416005404}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -23.3, y: 21.951, z: -33.493}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &416005409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 416005404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa4e2805432d99c4ea7cdb344775686e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateEnabled: 0
+  rotationSpeed: 50
 --- !u!1 &423303694
 GameObject:
   m_ObjectHideFlags: 0
@@ -12624,7 +12670,7 @@ MonoBehaviour:
   isReeled: 0
   isCasting: 0
   isCasted: 0
-  hookSet: 0
+  hookHasFish: 0
   bobberFloating: 0
 --- !u!1 &470584716
 GameObject:
@@ -53195,7 +53241,31 @@ MonoBehaviour:
   isPanicking: 0
   isHooked: 1
   isHookSet: 0
+  mesh: {fileID: 0}
   isLure: 0
+  swimSpeed: 0
+  swimHuntSpeed: 0
+  swimEscapeSpeed: 0
+  deviateRange: 0
+  deviateChance: 0
+  perceptionRadius: 0
+  avoidanceRadius: 0
+  avoidanceSeconds: 0
+  foodScore: 0
+  foodScoreMax: 0
+  scoreDifferenceThreshold: 1.5
+  sizeMultiplier: 0
+  hungerWeight: 0
+  hungryInSeconds: 0
+  biteRange: 0
+  decompositionTime: 0
+  cohesionWeight: 0
+  separationWeight: 0
+  alignmentWeight: 0
+  alignmentSpeed: 0
+  maidenName: 
+  favoriteSong: 
+  luckyNumber: 0
 --- !u!4 &7271897189711889441
 Transform:
   m_ObjectHideFlags: 0
@@ -53528,3 +53598,4 @@ SceneRoots:
   - {fileID: 389460080}
   - {fileID: 1059099785}
   - {fileID: 461772984}
+  - {fileID: 416005408}

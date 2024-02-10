@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GameStateMachine : StateMachine
 {
+    BoidBehavior caughtFish;
+    GameObject caughtFishDisplay;
+
     //GameStates Scripts made with the IState interface
     //Assets -> Scripts -> GameManager -> States
     public GameIdleState IdleState {get; private set;}
@@ -26,6 +29,8 @@ public class GameStateMachine : StateMachine
         LandingState = new GameLandingState(this);
         FightingState = new GameFightingState(this);
         ScoringState = new GameScoringState(this);
+
+        caughtFishDisplay = GameObject.Find("CaughtFishDisplayObject");
     }
 
     void Start()
@@ -101,16 +106,39 @@ public class GameStateMachine : StateMachine
     {
         ChangeState(ReelingState);
     }
-    public void Landing()
+    public void Landing(BoidBehavior caught)
     {
         ChangeState(LandingState);
+
+        caughtFish = caught;
+        StartCoroutine(LandingCoroutine());
+        
     }
     public void Fighting()
     {
         ChangeState(FightingState);
+
+        
+        Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
     }
     public void Scoring()
     {
         ChangeState(ScoringState);
+        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
+    }
+
+    IEnumerator LandingCoroutine()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 2f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
+        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
+        Fighting();
     }
 }
