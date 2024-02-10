@@ -458,6 +458,7 @@ public class BoidBehavior : MonoBehaviour
 
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = true;
+        fishingRod.Bite();
 
     }
     void Land(BoidBehavior caught)

@@ -1,11 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameStateMachine : StateMachine
 {
-    BoidBehavior caughtFish;
-    GameObject caughtFishDisplay;
+    FishingRodSpawner rodSpawner;
+
+    BoidBehavior caughtFish;        //the fish data that was caught
+    GameObject caughtFishDisplay;   //the object that parents the trophy
+    GameObject trophy;              //the instance of the caughtFish that is displayed
+    public bool resetReady = false;
+
+    [SerializeField] GameObject UI_EquipPrompt;
+    [SerializeField] GameObject UI_CastPrompt;
+    [SerializeField] GameObject UI_ReelPrompt;
+    [SerializeField] GameObject UI_CaughtPrompt;
 
     //GameStates Scripts made with the IState interface
     //Assets -> Scripts -> GameManager -> States
@@ -31,14 +41,22 @@ public class GameStateMachine : StateMachine
         ScoringState = new GameScoringState(this);
 
         caughtFishDisplay = GameObject.Find("CaughtFishDisplayObject");
-    }
+        rodSpawner = GameObject.Find("FishingRodSpawner").GetComponent<FishingRodSpawner>();
 
-    void Start()
+        UI_EquipPrompt.SetActive(false);
+        UI_CastPrompt.SetActive(false);
+        UI_ReelPrompt.SetActive(false);
+        UI_CaughtPrompt.SetActive(false);
+
+
+    }
+    private void Start()
     {
         //defined in the StateMachine base class
         //Start in idle mode
-        ChangeState(IdleState);
+        Idle();
     }
+
 
     void Update()
     {
@@ -81,16 +99,38 @@ public class GameStateMachine : StateMachine
         {
             ChangeState(ScoringState);
         }
+
+        if (resetReady)
+        {
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                rodSpawner.SpawnRod();
+                resetReady = false;
+                UI_EquipPrompt.SetActive(false);
+                UI_CastPrompt.SetActive(true);
+            }
+        }
     }
 
     public void Idle()
     {
         ChangeState(IdleState);
+        //rodSpawner.DespawnRod();
+        
+        resetReady = true;
+
+        UI_EquipPrompt.SetActive(true);
+
+        if (trophy != null)
+        {
+            Destroy(trophy);
+        }
     }
 
     public void Casting()
     {
         ChangeState(CastingState);
+        UI_CastPrompt.SetActive(false);
     }
 
     public void Casted()
@@ -101,15 +141,16 @@ public class GameStateMachine : StateMachine
     public void Bite()
     {
         ChangeState(BiteState);
+        StartCoroutine(BiteCoroutine());
     }
     public void Reeling()
     {
         ChangeState(ReelingState);
+        UI_ReelPrompt.SetActive(false);
     }
     public void Landing(BoidBehavior caught)
     {
         ChangeState(LandingState);
-
         caughtFish = caught;
         StartCoroutine(LandingCoroutine());
         
@@ -117,28 +158,65 @@ public class GameStateMachine : StateMachine
     public void Fighting()
     {
         ChangeState(FightingState);
-
-        
-        Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
+        StartCoroutine(FightingCoroutine());
     }
     public void Scoring()
     {
         ChangeState(ScoringState);
-        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
+        
     }
 
-    IEnumerator LandingCoroutine()
+    IEnumerator BiteCoroutine()
     {
         float elapsedTime = 0f;
 
-        while (elapsedTime < 2f)
+        UI_ReelPrompt.SetActive(true);
+
+        while (elapsedTime < 4f)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
         }
 
-        Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
-        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
+        Reeling();
+    }
+    IEnumerator LandingCoroutine()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < .9f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
         Fighting();
+    }
+
+    IEnumerator FightingCoroutine()
+    {
+        float elapsedTime = 0f;
+
+        if (trophy != null)
+        {
+            Destroy(trophy);
+        }
+        trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
+        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
+
+        UI_CaughtPrompt.SetActive(true);
+        GameObject.Find("CaughtLabel").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
+
+        //Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
+
+        while (elapsedTime < 5f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
+        UI_CaughtPrompt.SetActive(false);
+        resetReady = true;
+        Idle();
     }
 }

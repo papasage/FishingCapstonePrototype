@@ -36,10 +36,62 @@ public class FishingRod : MonoBehaviour
     public bool bobberFloating;
 
 
-
-    // Start is called before the first frame update
-    void Awake()
+        // Start is called before the first frame update
+        void Start()
     {
+        InitializeRod();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+            if (Input.GetKeyDown(KeyCode.UpArrow) && isReeled)
+            {
+                Cast(launchForce);
+            }
+
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                Reel(reelForce);
+            }
+
+            if (rodToBobberString != null && rodToBobberString.maxDistance == 0)
+            {
+                if (!isReeled)
+                {
+                    isReeled = true;
+                    isCasted = false;
+
+                    if (!hookHasFish)
+                    {
+                        gamestate.resetReady = true;
+                        gamestate.Idle();
+                        Destroy(this.gameObject);
+                    }
+                }
+
+            }
+
+            if (floater.isFloating == true)
+            {
+                isCasting = false;
+
+                if (isCasted == true)
+                {
+                    return;
+                }
+                else
+                {
+                    DropHook(bobberToHookStringSlack);
+                }
+            }
+
+    }
+
+    public void InitializeRod()
+    {
+        Debug.Log("Initialize Rod");
+
         gamestate = GameObject.Find("GameManager").GetComponent<GameStateMachine>();
 
         bobber = GameObject.Find("Bobber");
@@ -47,8 +99,8 @@ public class FishingRod : MonoBehaviour
         hook = GameObject.Find("Hook");
 
         rodToBobberString = GameObject.Find("Rod").GetComponent<SpringJoint>();
-        bobberToHookString = bobber.GetComponent <SpringJoint>();
-        
+        bobberToHookString = bobber.GetComponent<SpringJoint>();
+
 
         audioReeling = GameObject.Find("Reeling").GetComponent<AudioSource>();
         audioCasting = GameObject.Find("Casting").GetComponent<AudioSource>();
@@ -58,54 +110,14 @@ public class FishingRod : MonoBehaviour
         hookHasFish = false;
     }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isReeled)
-        {
-            Cast(launchForce);
-        }
-
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            Reel(reelForce);
-        }
-
-        if (rodToBobberString.maxDistance == 0)
-        {
-            if (!isReeled)
-            {
-                isReeled = true;
-                isCasted = false;
-
-                if(!hookHasFish)
-                {
-                    gamestate.Idle();
-                }
-            }
-
-        }
-
-        if (floater.isFloating == true)
-        {
-            isCasting = false;
-
-            if (isCasted == true)
-            {
-                return;
-            }
-            else
-            {
-                DropHook(bobberToHookStringSlack);
-            }
-        }
-    }
-
     void Cast(float strength)
     {
         isCasting = true;
         isReeled = false;
         gamestate.Casting();
+
+        //FOR SOME REASON THE CODE BREAKS HERE AND I AM REALLY FUCKING TIRED OF LOOKING AT IT. 
+
         audioCasting.Play();
         bobber.GetComponent<Rigidbody>().AddForce(launchDirection.normalized * strength, ForceMode.Impulse);
         rodToBobberString.maxDistance = rodToBobberStringSlack;
@@ -128,7 +140,7 @@ public class FishingRod : MonoBehaviour
 
         if (!isReeled)
         {
-            gamestate.Reeling();
+            //gamestate.Reeling();
             audioReeling.Play();
             rodToBobberString.maxDistance -= strength;
         }
@@ -138,5 +150,10 @@ public class FishingRod : MonoBehaviour
     {
         caughtFish = caught;
         gamestate.Landing(caughtFish);
+    }
+
+    public void Bite()
+    {
+        gamestate.Bite();
     }
 }

@@ -53,10 +53,10 @@ public class UIController : MonoBehaviour
 
     private void Update()
     {
-        RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
-        RTBTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
-        BTHForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
-        BTHTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
+        //RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+        //RTBTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
+        //BTHForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+        //BTHTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
     }
 
     void UpdateBoidCount()

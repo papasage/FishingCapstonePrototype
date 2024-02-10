@@ -16,7 +16,17 @@ public class Bobber : MonoBehaviour
     }
     private void Update()
     {
-        SetLineRendererPositions();
+        if (hook != null && firePoint != null)
+        {
+            SetLineRendererPositions();
+        }
+        else
+        {
+            lineRenderer = GetComponent<LineRenderer>();
+            hook = GameObject.Find("Hook");
+            firePoint = GameObject.Find("FirePoint");
+        }
+        
     }
 
     void SetLineRendererPositions()
