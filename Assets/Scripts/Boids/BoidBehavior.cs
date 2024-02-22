@@ -32,6 +32,7 @@ public class BoidBehavior : MonoBehaviour
     private Vector3 predatorDistance;
     private GameObject hook;
     private FishingRod fishingRod;
+    private LineManager bobber;
 
 
     [Header("Bool States")]
@@ -459,6 +460,14 @@ public class BoidBehavior : MonoBehaviour
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = true;
         fishingRod.Bite();
+
+        bobber = GameObject.Find("Bobber").GetComponent<LineManager>();
+
+        if (bobber != null)
+        {
+            fishingRod.hookedFish = this.gameObject;
+        }
+        else Debug.Log("Hook Can't Set: No Bobber Found!");
 
     }
     void Land(BoidBehavior caught)

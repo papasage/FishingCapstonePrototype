@@ -6,10 +6,12 @@ public class FishingRod : MonoBehaviour
 {
 
     GameStateMachine gamestate;
-    GameObject bobber; //the bobber is what is controlling the line renderers and gets launched on cast
+    GameObject bobber; //the bobber is what gets launched on cast
     Floater floater; //the floater is the part of the bobber that helps it float. 
-    GameObject hook;
+    GameObject hookArt;
     BoidBehavior caughtFish;
+
+    public GameObject hookedFish;
 
     [Header("Casting")]
     public float launchForce = 1f;
@@ -23,6 +25,12 @@ public class FishingRod : MonoBehaviour
     SpringJoint bobberToHookString;
     public float rodToBobberStringSlack = 20f;
     public float bobberToHookStringSlack = 5f;
+
+    [Header("Line Renderer")]
+    LineRenderer lineRenderer;
+    GameObject hook;
+    GameObject firePoint;
+
 
     [Header("Audio")]
     AudioSource audioReeling;
@@ -45,7 +53,18 @@ public class FishingRod : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-            if (Input.GetKeyDown(KeyCode.UpArrow) && isReeled)
+        if (hook != null && firePoint != null)
+        {
+            SetLineRendererPositions();
+        }
+        else
+        {
+            lineRenderer = GetComponent<LineRenderer>();
+            hook = GameObject.Find("Hook");
+            firePoint = GameObject.Find("FirePoint");
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) && isReeled)
             {
                 Cast(launchForce);
             }
@@ -96,11 +115,14 @@ public class FishingRod : MonoBehaviour
 
         bobber = GameObject.Find("Bobber");
         floater = bobber.GetComponent<Floater>();
-        hook = GameObject.Find("Hook");
+        hookArt = GameObject.Find("HookArt");
 
         rodToBobberString = GameObject.Find("Rod").GetComponent<SpringJoint>();
         bobberToHookString = bobber.GetComponent<SpringJoint>();
 
+        lineRenderer = bobber.GetComponent<LineRenderer>();
+        hook = GameObject.Find("Hook");
+        firePoint = GameObject.Find("FirePoint");
 
         audioReeling = GameObject.Find("Reeling").GetComponent<AudioSource>();
         audioCasting = GameObject.Find("Casting").GetComponent<AudioSource>();
@@ -116,7 +138,7 @@ public class FishingRod : MonoBehaviour
         isReeled = false;
         gamestate.Casting();
 
-        //FOR SOME REASON THE CODE BREAKS HERE AND I AM REALLY FUCKING TIRED OF LOOKING AT IT. 
+        
 
         audioCasting.Play();
         bobber.GetComponent<Rigidbody>().AddForce(launchDirection.normalized * strength, ForceMode.Impulse);
@@ -155,5 +177,24 @@ public class FishingRod : MonoBehaviour
     public void Bite()
     {
         gamestate.Bite();
+        if (hookArt != null)
+        {
+            hookArt.SetActive(false);
+        }
+        
+    }
+
+    void SetLineRendererPositions()
+    {
+        // Set the positions of the line renderer to the positions of the start and end objects
+        lineRenderer.positionCount = 3;
+        lineRenderer.SetPosition(0, firePoint.transform.position);
+        lineRenderer.SetPosition(1, bobber.transform.position);
+        lineRenderer.SetPosition(2, hook.transform.position);
+
+        if (hookedFish != null)
+        {
+            lineRenderer.SetPosition(2, hookedFish.transform.position);
+        }
     }
 }

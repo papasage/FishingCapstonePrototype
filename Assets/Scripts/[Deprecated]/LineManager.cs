@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bobber : MonoBehaviour
+public class LineManager : MonoBehaviour
 {
+    // I called this class LineManager, but it became more of a "Line Manager". I would change the name, but I dont want to break things. 
+
     LineRenderer lineRenderer;
     GameObject hook;
     GameObject firePoint;
+
+    public GameObject hookedFish;
 
     public void Awake()
     {
@@ -36,5 +40,10 @@ public class Bobber : MonoBehaviour
         lineRenderer.SetPosition(0, firePoint.transform.position);
         lineRenderer.SetPosition(1, this.transform.position);
         lineRenderer.SetPosition(2, hook.transform.position);
+        
+        if (hookedFish != null)
+        {
+            lineRenderer.SetPosition(2, hookedFish.transform.position);
+        }
     }
 }
