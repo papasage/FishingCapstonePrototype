@@ -1534,7 +1534,7 @@ MonoBehaviour:
   hookedFish: {fileID: 0}
   launchForce: 100
   launchDirection: {x: 1, y: 0, z: 1}
-  reelForce: 0.05
+  reelForce: 0.09
   rodToBobberStringSlack: 20
   bobberToHookStringSlack: 2
   isReeled: 0

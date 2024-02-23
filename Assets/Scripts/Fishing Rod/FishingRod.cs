@@ -50,6 +50,12 @@ public class FishingRod : MonoBehaviour
         InitializeRod();
     }
 
+    private void OnEnable()
+    {
+        ControllerInputManager.onReel += ReelInput;
+        //ControllerInputManager.onCast += CastInput;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -64,14 +70,14 @@ public class FishingRod : MonoBehaviour
             firePoint = GameObject.Find("FirePoint");
         }
 
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isReeled)
+        if (Input.GetButtonDown("A") && isReeled)
             {
                 Cast(launchForce);
             }
 
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                Reel(reelForce);
+                //Reel(reelForce);
             }
 
             if (rodToBobberString != null && rodToBobberString.maxDistance == 0)
@@ -131,14 +137,15 @@ public class FishingRod : MonoBehaviour
         isCasted = false;
         hookHasFish = false;
     }
-
+    public void CastInput()
+    {
+        Cast(launchForce);
+    }
     void Cast(float strength)
     {
         isCasting = true;
         isReeled = false;
         gamestate.Casting();
-
-        
 
         audioCasting.Play();
         bobber.GetComponent<Rigidbody>().AddForce(launchDirection.normalized * strength, ForceMode.Impulse);
@@ -151,7 +158,10 @@ public class FishingRod : MonoBehaviour
         gamestate.Casted();
         bobberToHookString.maxDistance = hookWeight;
     }
-
+    public void ReelInput()
+    {
+        Reel(reelForce);
+    }
     void Reel(float strength)
     {
         if (isCasted)
@@ -164,6 +174,7 @@ public class FishingRod : MonoBehaviour
         {
             //gamestate.Reeling();
             audioReeling.Play();
+            RumbleManager.instance.RumblePulse(0.1f, 1f, 0.05f);
             rodToBobberString.maxDistance -= strength;
         }
     }
@@ -181,7 +192,6 @@ public class FishingRod : MonoBehaviour
         {
             hookArt.SetActive(false);
         }
-        
     }
 
     void SetLineRendererPositions()
@@ -197,4 +207,6 @@ public class FishingRod : MonoBehaviour
             lineRenderer.SetPosition(2, hookedFish.transform.position);
         }
     }
+
+
 }

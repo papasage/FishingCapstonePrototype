@@ -102,7 +102,7 @@ public class GameStateMachine : StateMachine
 
         if (resetReady)
         {
-            if(Input.GetKeyDown(KeyCode.Space))
+            if(Input.GetButtonDown("X"))
             {
                 rodSpawner.SpawnRod();
                 resetReady = false;

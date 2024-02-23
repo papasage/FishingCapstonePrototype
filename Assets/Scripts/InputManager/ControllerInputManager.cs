@@ -5,10 +5,14 @@ using UnityEngine.Events;
 
 public class ControllerInputManager : MonoBehaviour
 {
+    public delegate void OnCast();
+    public static OnCast onCast;
 
-    public UnityEvent OnCastInput;
-    public UnityEvent OnEquipInput;
+    public delegate void OnEquip();
+    public static OnEquip onEquip;
 
+    public delegate void OnReel();
+    public static OnReel onReel;
 
     [SerializeField] float joystickDeadzone = 0.5f;
     [SerializeField] float reelingSensitivity = 0.5f;
@@ -16,100 +20,103 @@ public class ControllerInputManager : MonoBehaviour
     //reel motion vaiables
     private Vector2 lastLeftStickValue = Vector2.zero;
     private bool isReeling;
+    private bool canReel;
 
 
     void Update()
     {
         LeftStick();
         RightStick();
-        //Debug.Log("LStickX: " + Input.GetAxisRaw("LeftStickX") + " || " + "LStickY: " + Input.GetAxisRaw("LeftStickY") + " || " + "RStickX: " + Input.GetAxisRaw("RightStickX") + " || " + "RStickY: " + Input.GetAxisRaw("RightStickY"));
-
+        
         AButton();
         BButton();
         XButton();
         YButton();
         StartButton();
-
+        
         Reeling();
+
     }
 
     void LeftStick()
     {
         if (Input.GetAxisRaw("LeftStickX") < -joystickDeadzone)
         {
-            Debug.Log("Left Stick: Left");
+            //Debug.Log("Left Stick: Left");
         }
 
         if (Input.GetAxisRaw("LeftStickX") > joystickDeadzone)
         {
-            Debug.Log("Left Stick: Right");
+            //Debug.Log("Left Stick: Right");
         }
 
         if (Input.GetAxisRaw("LeftStickY") < -joystickDeadzone)
         {
-            Debug.Log("Left Stick: Up");
+            //Debug.Log("Left Stick: Up");
         }
 
         if (Input.GetAxisRaw("LeftStickY") > joystickDeadzone)
         {
-            Debug.Log("Left Stick: Down");
+            //Debug.Log("Left Stick: Down");
         }
     }
     void RightStick()
     {
         if (Input.GetAxisRaw("RightStickX") < -joystickDeadzone)
         {
-            Debug.Log("Right Stick: Left");
+            //Debug.Log("Right Stick: Left");
         }
 
         if (Input.GetAxisRaw("RightStickX") > joystickDeadzone)
         {
-            Debug.Log("Right Stick: Right");
+            //Debug.Log("Right Stick: Right");
         }
 
         if (Input.GetAxisRaw("RightStickY") < -joystickDeadzone)
         {
-            Debug.Log("Right Stick: Up");
+            //Debug.Log("Right Stick: Up");
         }
 
         if (Input.GetAxisRaw("RightStickY") > joystickDeadzone)
         {
-            Debug.Log("Right Stick: Down");
+            //Debug.Log("Right Stick: Down");
         }
     }
     void AButton()
     {
         if (Input.GetButtonDown("A"))
         {
-            Debug.Log("A Down");
+            //Debug.Log("A Down");
+            onCast();
         }
     }
     void BButton()
     {
         if (Input.GetButtonDown("B"))
         {
-            Debug.Log("B Down");
+            //Debug.Log("B Down");
         }
     }
     void XButton()
     {
         if (Input.GetButtonDown("X"))
         {
-            Debug.Log("X Down");
+            //Debug.Log("X Down");
+            //onEquip();
         }
     }
     void YButton()
     {
         if (Input.GetButtonDown("Y"))
         {
-            Debug.Log("Y Down");
+            //Debug.Log("Y Down");
         }
     }
     void StartButton()
     {
         if (Input.GetButtonDown("Start"))
         {
-            Debug.Log("Start Down");
+            //Debug.Log("Start Down");
         }
     }
 
@@ -136,6 +143,7 @@ public class ControllerInputManager : MonoBehaviour
         if (isReeling)
         {
             Debug.Log("Reeling Motion Detected!");
+            onReel();
         }
     }
 }
