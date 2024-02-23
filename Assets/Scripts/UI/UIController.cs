@@ -31,7 +31,9 @@ public class UIController : MonoBehaviour
     [SerializeField] TMP_Text BTHForce;
 
     [Header("Fishing Line Distance Meter")]
+    [SerializeField] public GameObject ProgressBarParent;
     [SerializeField] public Slider lineDistance;
+
 
     private void OnEnable()
     {
@@ -46,6 +48,11 @@ public class UIController : MonoBehaviour
 
         FishSpawner.onSpawn += UpdateBoidCount;
         BoidBehavior.onDeath += UpdateBoidCount;
+
+        //handle progress bar
+        GameCastedState.onStateCasted += ShowReelProgressBar;
+        GameLandingState.onStateLanding += HideReelProgressBar;
+        GameIdleState.onStateIdle += HideReelProgressBar;
     }
 
     private void Start()
@@ -55,18 +62,7 @@ public class UIController : MonoBehaviour
 
     private void Update()
     {
-        if (rodIsEquipped)
-        {
-            RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
-            BTHForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
-
-            lineDistance.value = RodToBobber.maxDistance;
-        }
-        else
-        {
-            RTBForce.text = "-";
-            BTHForce.text = "-";
-        }
+        CalculateLineData();
     }
 
     void UpdateBoidCount()
@@ -131,11 +127,46 @@ public class UIController : MonoBehaviour
         UIStateText.text = "Shop";
     }
 
+    void CalculateLineData()
+    {
+        if (rodIsEquipped)
+        {
+            RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+            BTHForce.text = Mathf.Round(BobberToHook.currentForce.magnitude).ToString();
+
+            if (RodToBobber.currentForce.magnitude > 60f)
+            {
+                RTBForce.color = Color.red;
+            }
+            else RTBForce.color = Color.white;
+
+            if (BobberToHook.currentForce.magnitude > 60f)
+            {
+                BTHForce.color = Color.red;
+            }
+            else BTHForce.color = Color.white;
+
+            lineDistance.value = RodToBobber.maxDistance;
+        }
+        else
+        {
+            RTBForce.text = "-";
+            BTHForce.text = "-";
+        }
+    }
     public void InitializeRodUI(float lineSlack)
     {
         RodToBobber = GameObject.Find("Rod").GetComponent<SpringJoint>();
         BobberToHook = GameObject.Find("Bobber").GetComponent<SpringJoint>();
 
         lineDistance.maxValue = lineSlack;
+    }
+     void ShowReelProgressBar()
+    {
+        ProgressBarParent.SetActive(true);
+    }
+     void HideReelProgressBar()
+    {
+        ProgressBarParent.SetActive(false);
     }
 }

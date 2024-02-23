@@ -27,15 +27,14 @@ public class FishingRod : MonoBehaviour
     public float rodToBobberStringSlack = 20f;
     public float bobberToHookStringSlack = 5f;
 
+    public float maxLineTension = 60f;
+    public float rodToBobberLineDamage = 0f;
+    public float bobberToHookLineDamage = 0f;
+
     [Header("Line Renderer")]
     LineRenderer lineRenderer;
     GameObject hook;
     GameObject firePoint;
-
-
-    [Header("Audio")]
-    AudioSource audioReeling;
-    AudioSource audioCasting;
 
     [Header("Bools")]
     public bool isReeled;
@@ -108,13 +107,15 @@ public class FishingRod : MonoBehaviour
 
                 if (isCasted == true)
                 {
+                    CalculateLineTension();
                     return;
                 }
                 else
                 {
                     DropHook(bobberToHookStringSlack);
                     RumbleManager.instance.RumblePulse(0.5f, .1f, 0.25f);
-                }
+                    AudioManager.instance.RodBobberSplash();
+            }
             }
 
     }
@@ -136,9 +137,6 @@ public class FishingRod : MonoBehaviour
         hook = GameObject.Find("Hook");
         firePoint = GameObject.Find("FirePoint");
 
-        audioReeling = GameObject.Find("Reeling").GetComponent<AudioSource>();
-        audioCasting = GameObject.Find("Casting").GetComponent<AudioSource>();
-
         isReeled = true;
         isCasted = false;
         hookHasFish = false;
@@ -153,10 +151,13 @@ public class FishingRod : MonoBehaviour
         isReeled = false;
         gamestate.Casting();
 
-        audioCasting.Play();
+        AudioManager.instance.RodCast();
+
         bobber.GetComponent<Rigidbody>().AddForce(launchDirection.normalized * strength, ForceMode.Impulse);
         rodToBobberString.maxDistance = rodToBobberStringSlack;
         RumbleManager.instance.RumblePulse(0.1f, .1f, 1.5f);
+
+
     }
 
     void DropHook(float hookWeight)
@@ -164,6 +165,7 @@ public class FishingRod : MonoBehaviour
         isCasted = true;
         gamestate.Casted();
         bobberToHookString.maxDistance = hookWeight;
+        
     }
     public void ReelInput()
     {
@@ -180,7 +182,8 @@ public class FishingRod : MonoBehaviour
         if (!isReeled)
         {
             //gamestate.Reeling();
-            audioReeling.Play();
+
+            AudioManager.instance.RodReel();
             RumbleManager.instance.RumblePulse(0.1f, .5f, 0.05f);
             rodToBobberString.maxDistance -= strength;
         }
@@ -196,6 +199,7 @@ public class FishingRod : MonoBehaviour
     {
         gamestate.Bite();
         RumbleManager.instance.RumblePulse(1f, 1f, 1f);
+        AudioManager.instance.FishHooked();
         if (hookArt != null)
         {
             hookArt.SetActive(false);
@@ -216,5 +220,17 @@ public class FishingRod : MonoBehaviour
         }
     }
 
+    void CalculateLineTension()
+    {
+        if (rodToBobberString.currentForce.magnitude > maxLineTension)
+        {
+            rodToBobberLineDamage++;
+        }
+
+        if (bobberToHookString.currentForce.magnitude > maxLineTension)
+        {
+            bobberToHookLineDamage++;
+        }
+    }
 
 }

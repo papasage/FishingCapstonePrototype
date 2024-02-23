@@ -204,6 +204,8 @@ public class GameStateMachine : StateMachine
         trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
         caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
 
+        AudioManager.instance.FishFanfare();
+
         UI_CaughtPrompt.SetActive(true);
         GameObject.Find("CaughtLabel").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
 

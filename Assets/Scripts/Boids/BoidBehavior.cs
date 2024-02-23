@@ -466,6 +466,7 @@ public class BoidBehavior : MonoBehaviour
     }
     void Land(BoidBehavior caught)
     {
+        AudioManager.instance.FishOut();
         fishingRod.Catch(caught);
         fishingRod.hookHasFish = false;
         Destroy(this.gameObject);

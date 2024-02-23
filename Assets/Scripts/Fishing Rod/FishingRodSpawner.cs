@@ -37,6 +37,7 @@ public class FishingRodSpawner : MonoBehaviour
         //tell the UI that it is okay to look for references to the rod
         ui.rodIsEquipped = true;
         ui.InitializeRodUI(currentRod.GetComponent<FishingRod>().rodToBobberStringSlack);
+        AudioManager.instance.RodEquip();
     }
 
     public void DespawnRod()
