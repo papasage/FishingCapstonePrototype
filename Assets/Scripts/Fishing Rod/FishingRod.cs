@@ -108,6 +108,7 @@ public class FishingRod : MonoBehaviour
                 else
                 {
                     DropHook(bobberToHookStringSlack);
+                    RumbleManager.instance.RumblePulse(0.5f, .1f, 0.25f);
                 }
             }
 
@@ -150,6 +151,7 @@ public class FishingRod : MonoBehaviour
         audioCasting.Play();
         bobber.GetComponent<Rigidbody>().AddForce(launchDirection.normalized * strength, ForceMode.Impulse);
         rodToBobberString.maxDistance = rodToBobberStringSlack;
+        RumbleManager.instance.RumblePulse(0.1f, .1f, 1.5f);
     }
 
     void DropHook(float hookWeight)
@@ -174,7 +176,7 @@ public class FishingRod : MonoBehaviour
         {
             //gamestate.Reeling();
             audioReeling.Play();
-            RumbleManager.instance.RumblePulse(0.1f, 1f, 0.05f);
+            RumbleManager.instance.RumblePulse(0.1f, .5f, 0.05f);
             rodToBobberString.maxDistance -= strength;
         }
     }
@@ -188,6 +190,7 @@ public class FishingRod : MonoBehaviour
     public void Bite()
     {
         gamestate.Bite();
+        RumbleManager.instance.RumblePulse(1f, 1f, 1f);
         if (hookArt != null)
         {
             hookArt.SetActive(false);

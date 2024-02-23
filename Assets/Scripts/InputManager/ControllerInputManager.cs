@@ -87,7 +87,7 @@ public class ControllerInputManager : MonoBehaviour
         if (Input.GetButtonDown("A"))
         {
             //Debug.Log("A Down");
-            onCast();
+            //onCast();
         }
     }
     void BButton()
