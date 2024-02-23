@@ -10,6 +10,7 @@ public class FishingRod : MonoBehaviour
     Floater floater; //the floater is the part of the bobber that helps it float. 
     GameObject hookArt;
     BoidBehavior caughtFish;
+    FishingRodSpawner rodSpawner;
 
     public GameObject hookedFish;
 
@@ -48,6 +49,8 @@ public class FishingRod : MonoBehaviour
         void Start()
     {
         InitializeRod();
+        rodSpawner = GameObject.Find("FishingRodSpawner").GetComponent<FishingRodSpawner>();
+
     }
 
     private void OnEnable()
@@ -91,7 +94,9 @@ public class FishingRod : MonoBehaviour
                     {
                         gamestate.resetReady = true;
                         gamestate.Idle();
-                        Destroy(this.gameObject);
+                        //Destroy(this.gameObject);
+                        rodSpawner.DespawnRod();
+                        //rodSpawner.SpawnRod();
                     }
                 }
 

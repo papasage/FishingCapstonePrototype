@@ -6,6 +6,7 @@ public class FishingRodSpawner : MonoBehaviour
 {
     [SerializeField] GameObject FishingRod;
     [SerializeField] GameObject currentRod;
+    UIController ui;
 
     private void OnEnable()
     {
@@ -18,6 +19,8 @@ public class FishingRodSpawner : MonoBehaviour
     void Start()
     {
         //SpawnRod();
+        ui = GameObject.Find("UIManager").GetComponent<UIController>();
+        ui.rodIsEquipped = false;
     }
 
     public void SpawnRod()
@@ -25,19 +28,27 @@ public class FishingRodSpawner : MonoBehaviour
         Debug.Log("Spawning Rod");
         if (currentRod != null)
         {
-            Destroy(currentRod);
+            DespawnRod();
         }
         currentRod = Instantiate(FishingRod, transform.position, Quaternion.identity);
         currentRod.name = "FishingRod";
         currentRod.GetComponent<FishingRod>().InitializeRod();
+        
+        //tell the UI that it is okay to look for references to the rod
+        ui.rodIsEquipped = true;
+        ui.InitializeRodUI(currentRod.GetComponent<FishingRod>().rodToBobberStringSlack);
     }
 
     public void DespawnRod()
     {
-        Debug.Log("Despawning Rod");
+        ui.rodIsEquipped = false;
+
         if (currentRod != null)
         {
+            Debug.Log("Despawning Rod");
+            
             Destroy(currentRod);
+            
         }
     }
 }

@@ -24,12 +24,14 @@ public class UIController : MonoBehaviour
     [SerializeField] Sprite _stateScoring;
 
     [Header("Fishing Line Tension Data")]
+    public bool rodIsEquipped;
     [SerializeField] SpringJoint RodToBobber;
     [SerializeField] SpringJoint BobberToHook;
     [SerializeField] TMP_Text RTBForce;
-    [SerializeField] TMP_Text RTBTorque;
     [SerializeField] TMP_Text BTHForce;
-    [SerializeField] TMP_Text BTHTorque;
+
+    [Header("Fishing Line Distance Meter")]
+    [SerializeField] public Slider lineDistance;
 
     private void OnEnable()
     {
@@ -53,10 +55,18 @@ public class UIController : MonoBehaviour
 
     private void Update()
     {
-        //RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
-        //RTBTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
-        //BTHForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
-        //BTHTorque.text = Mathf.Round(RodToBobber.currentTorque.magnitude).ToString();
+        if (rodIsEquipped)
+        {
+            RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+            BTHForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
+
+            lineDistance.value = RodToBobber.maxDistance;
+        }
+        else
+        {
+            RTBForce.text = "-";
+            BTHForce.text = "-";
+        }
     }
 
     void UpdateBoidCount()
@@ -119,5 +129,13 @@ public class UIController : MonoBehaviour
     {
         UIStateSprite.sprite = _stateScoring;
         UIStateText.text = "Shop";
+    }
+
+    public void InitializeRodUI(float lineSlack)
+    {
+        RodToBobber = GameObject.Find("Rod").GetComponent<SpringJoint>();
+        BobberToHook = GameObject.Find("Bobber").GetComponent<SpringJoint>();
+
+        lineDistance.maxValue = lineSlack;
     }
 }
