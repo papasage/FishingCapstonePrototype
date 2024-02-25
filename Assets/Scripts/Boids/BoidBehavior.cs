@@ -247,7 +247,11 @@ public class BoidBehavior : MonoBehaviour
 
             //FOOD STATS
             sizeMultiplier = Random.Range(fish.minSizeMultiplier,fish.maxSizeMultiplier);
-            foodScore = fish.foodScore * sizeMultiplier;
+            if (!isLure)
+            {
+                foodScore = fish.foodScore * sizeMultiplier;
+            }
+            else foodScore = fish.foodScore;
             foodScoreMax = fish.foodScoreMax;
             hungerWeight = fish.hungerWeight;
             hungryInSeconds = fish.hungryInSeconds;
@@ -460,9 +464,16 @@ public class BoidBehavior : MonoBehaviour
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = true;
         fishingRod.hookedFish = this.gameObject;
-        fishingRod.Bite();
-
-            
+        fishingRod.Bite();   
+    }
+    public void Unhook()
+    {
+        isHooked = false;
+        isHookSet = false;
+        hook.GetComponent<FixedJoint>().connectedBody = null;
+        fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
+        fishingRod.hookHasFish = false;
+        fishingRod.hookedFish = null;
     }
     void Land(BoidBehavior caught)
     {

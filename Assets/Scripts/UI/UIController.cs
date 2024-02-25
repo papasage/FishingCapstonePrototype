@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Linq;
+using Unity.VisualScripting;
+//using UnityEngine.UIElements;
 
 public class UIController : MonoBehaviour
 {
+    FishingRod currentRod;
+
     [Header("Boid Counter Data")]
     [SerializeField] TMP_Text UIBoidCountText;
     private List<GameObject> boids;
@@ -29,10 +33,16 @@ public class UIController : MonoBehaviour
     [SerializeField] SpringJoint BobberToHook;
     [SerializeField] TMP_Text RTBForce;
     [SerializeField] TMP_Text BTHForce;
+    [SerializeField] TMP_Text RTBDamage;
+    [SerializeField] TMP_Text BTHDamage;
 
     [Header("Fishing Line Distance Meter")]
     [SerializeField] public GameObject ProgressBarParent;
     [SerializeField] public Slider lineDistance;
+    private Image progressBarFill;
+    private Color lerpedColor;
+    [SerializeField] public Color colorHealthMax;
+    [SerializeField] public Color colorHealthDepleated;
 
 
     private void OnEnable()
@@ -58,11 +68,26 @@ public class UIController : MonoBehaviour
     private void Start()
     {
         UpdateBoidCount();
+
     }
 
     private void Update()
     {
         CalculateLineData();
+
+        if (ProgressBarParent.activeInHierarchy)
+        {
+            ProgressBarColor();
+        }
+
+        if (rodIsEquipped)
+        {
+            if(currentRod.RTBLineSnapped || currentRod.BTHLineSnapped)
+            {
+                HideReelProgressBar();
+            }
+        }
+        
     }
 
     void UpdateBoidCount()
@@ -131,6 +156,20 @@ public class UIController : MonoBehaviour
     {
         if (rodIsEquipped)
         {
+            if (currentRod.RTBLineSnapped)
+            {
+                RTBDamage.color = Color.red;
+                RTBDamage.text = "BREAK";
+                return;
+            }
+
+            if (currentRod.BTHLineSnapped)
+            {
+                BTHDamage.color = Color.red;
+                BTHDamage.text = "BREAK";
+                return;
+            }
+
             RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
             BTHForce.text = Mathf.Round(BobberToHook.currentForce.magnitude).ToString();
 
@@ -147,11 +186,22 @@ public class UIController : MonoBehaviour
             else BTHForce.color = Color.white;
 
             lineDistance.value = RodToBobber.maxDistance;
+
+            if (currentRod != null)
+            {
+                RTBDamage.color = Color.white;
+                RTBDamage.text = currentRod.rodToBobberLineHealth.ToString();
+                BTHDamage.color = Color.white;
+                BTHDamage.text = currentRod.bobberToHookLineHealth.ToString();
+            }
+            
         }
         else
         {
             RTBForce.text = "-";
             BTHForce.text = "-";
+            RTBDamage.text = "-";
+            BTHDamage.text = "-";
         }
     }
     public void InitializeRodUI(float lineSlack)
@@ -160,13 +210,36 @@ public class UIController : MonoBehaviour
         BobberToHook = GameObject.Find("Bobber").GetComponent<SpringJoint>();
 
         lineDistance.maxValue = lineSlack;
+
+        currentRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
     }
      void ShowReelProgressBar()
     {
         ProgressBarParent.SetActive(true);
+        progressBarFill = GameObject.Find("ReelBarFillColor").GetComponent<Image>();
     }
      void HideReelProgressBar()
     {
         ProgressBarParent.SetActive(false);
+    }
+
+    void ProgressBarColor()
+    {
+        if (rodIsEquipped && currentRod != null)
+        {
+            float BTHHealthPercentage = currentRod.bobberToHookLineHealth / currentRod.lineMaxHealth;
+            float RTBHealthPercentage = currentRod.rodToBobberLineHealth / currentRod.lineMaxHealth;
+
+            float healthPercentage = Mathf.Min(BTHHealthPercentage, RTBHealthPercentage);
+
+            // Ensure the percentage is between 0 and 1
+            healthPercentage = Mathf.Clamp01(healthPercentage);
+
+            // Lerp the color based on the percentage
+            lerpedColor = Color.Lerp(colorHealthDepleated, colorHealthMax, healthPercentage);
+
+            // Assign the lerped color to the progressBarFill
+            progressBarFill.color = lerpedColor;
+        }
     }
 }

@@ -924,8 +924,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eefafdea512d71b4bbfa79548bf502c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fish: {fileID: 11400000, guid: e5c88941bdb484f48b82a4f39b0a4764, type: 2}
-  allFish: []
+  fish: {fileID: 0}
+  allFish:
+  - {fileID: 11400000, guid: e5c88941bdb484f48b82a4f39b0a4764, type: 2}
+  - {fileID: 11400000, guid: 0ec3c0c0a09d84c48ac3ff7d35652c45, type: 2}
+  - {fileID: 11400000, guid: 667f627bd606b004e9ea3c830ed9c56b, type: 2}
+  - {fileID: 11400000, guid: 171b0ceab7aa456439c0fb9b378b4f79, type: 2}
+  - {fileID: 11400000, guid: 173cfc1fbfcb79845ba4de42b55068d7, type: 2}
+  - {fileID: 11400000, guid: 8bb8886cef10aea49b4082d6f0166593, type: 2}
+  - {fileID: 11400000, guid: c2ecfdc83cef5bd4ab99cbac7fb2c587, type: 2}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64

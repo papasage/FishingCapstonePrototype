@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
+  m_Name: Lure Level 2
+  m_EditorClassIdentifier: 
+  mesh: {fileID: 919132149155446097, guid: 13c8382b39b93934cbed44290e7e3ff3, type: 3}
+  isLure: 1
+  swimSpeed: 0
+  swimHuntSpeed: 0
+  swimEscapeSpeed: 0
+  deviateRange: 0
+  deviateChance: 0
+  perceptionRadius: 0
+  avoidanceRadius: 0
+  avoidanceSeconds: 1.5
+  foodScore: 2
+  foodScoreMax: 100
+  minSizeMultiplier: 0.5
+  maxSizeMultiplier: 0.5
+  hungerWeight: 1
+  hungryInSeconds: 30
+  biteRange: 0.1
+  decompositionTime: 5
+  cohesionWeight: 0
+  separationWeight: 0
+  alignmentWeight: 0
+  alignmentSpeed: 0
+  maidenName: Pinkie
+  favoriteSong: 'Nocturnes, Op. 9: No. 1 in B-Flat Minor - Chopin'
+  luckyNumber: 4
