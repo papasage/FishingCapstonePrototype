@@ -5,6 +5,8 @@ using UnityEngine.Events;
 
 public class ControllerInputManager : MonoBehaviour
 {
+    public static ControllerInputManager instance;
+
     public delegate void OnCast();
     public static OnCast onCast;
 
@@ -23,6 +25,13 @@ public class ControllerInputManager : MonoBehaviour
     private bool canReel;
 
 
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
     void Update()
     {
         LeftStick();

@@ -46,6 +46,7 @@ public class BoidBehavior : MonoBehaviour
     public bool isPanicking = false;     // This is checked before the Panic coroutine is fired. If it is panicking, dont try to set it again.
     public bool isHooked = false;        // Trigger for ApplyHookedBehavior().
     public bool isHookSet = false;      // This is checked before the SetHook coroutine is fired. If it is set, dont try to set it again.
+    public bool tuggingTheLine = false;
 
     public delegate void OnDeath();
     public static OnDeath onDeath;
@@ -442,7 +443,12 @@ public class BoidBehavior : MonoBehaviour
         {
             //Move away from the fishing rod!
             transform.LookAt( - fishingRod.transform.position );
-            
+
+            if (!ControllerInputManager.instance.isReeling)
+            {
+                StartCoroutine(TugTheLineCoroutine());
+            }
+
             if (fishingRod.isReeled)
             {
                 Land(this);
@@ -734,6 +740,26 @@ public class BoidBehavior : MonoBehaviour
         StartCoroutine(EncroachingHunger());
 
         
+    }
+    IEnumerator TugTheLineCoroutine()
+    {
+        while (!tuggingTheLine)
+        {
+            tuggingTheLine = true;
+            yield return new WaitForSeconds(0.1f);
+            
+            if (fishingRod.rodToBobberString.maxDistance < fishingRod.rodToBobberStringSlack)
+            {
+                fishingRod.rodToBobberString.maxDistance += 0.1f;
+            }
+
+            if (fishingRod.rodToBobberString.maxDistance >= fishingRod.rodToBobberStringSlack)
+            {
+                fishingRod.bobberToHookLineHealth -= 3f; // HIT 3 TIMES IF THE DISTANCE IS MAXED OUT!
+            }
+
+            tuggingTheLine = false;
+        }
     }
     IEnumerator EncroachingHunger()
     {
