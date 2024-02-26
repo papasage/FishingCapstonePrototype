@@ -25,7 +25,7 @@ public class FishingRodSpawner : MonoBehaviour
 
     public void SpawnRod()
     {
-        Debug.Log("Spawning Rod");
+        //Debug.Log("Spawning Rod");
         if (currentRod != null)
         {
             DespawnRod();
@@ -46,7 +46,7 @@ public class FishingRodSpawner : MonoBehaviour
 
         if (currentRod != null)
         {
-            Debug.Log("Despawning Rod");
+            //Debug.Log("Despawning Rod");
             
             Destroy(currentRod);
             

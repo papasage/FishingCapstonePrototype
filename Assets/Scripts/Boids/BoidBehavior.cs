@@ -120,7 +120,7 @@ public class BoidBehavior : MonoBehaviour
         BoidBehavior.onDeath += GetAllBoids;
     }
     
-    void Update()
+    void FixedUpdate()
     {
         if (!isDead && !isLure)
         {

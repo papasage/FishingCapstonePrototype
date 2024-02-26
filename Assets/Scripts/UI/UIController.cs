@@ -35,6 +35,8 @@ public class UIController : MonoBehaviour
     [SerializeField] TMP_Text BTHForce;
     [SerializeField] TMP_Text RTBDamage;
     [SerializeField] TMP_Text BTHDamage;
+    [SerializeField] TMP_Text RTBLength;
+    [SerializeField] TMP_Text BTHLength;
 
     [Header("Fishing Line Distance Meter")]
     [SerializeField] public GameObject ProgressBarParent;
@@ -86,6 +88,7 @@ public class UIController : MonoBehaviour
             {
                 HideReelProgressBar();
             }
+            CalculateLineLength();
         }
         
     }
@@ -173,13 +176,13 @@ public class UIController : MonoBehaviour
             RTBForce.text = Mathf.Round(RodToBobber.currentForce.magnitude).ToString();
             BTHForce.text = Mathf.Round(BobberToHook.currentForce.magnitude).ToString();
 
-            if (RodToBobber.currentForce.magnitude > 60f)
+            if (RodToBobber.currentForce.magnitude > currentRod.maxLineTension)
             {
                 RTBForce.color = Color.red;
             }
             else RTBForce.color = Color.white;
 
-            if (BobberToHook.currentForce.magnitude > 60f)
+            if (BobberToHook.currentForce.magnitude > currentRod.maxLineTension)
             {
                 BTHForce.color = Color.red;
             }
@@ -202,6 +205,18 @@ public class UIController : MonoBehaviour
             BTHForce.text = "-";
             RTBDamage.text = "-";
             BTHDamage.text = "-";
+        }
+    }
+    void CalculateLineLength()
+    {
+        if (currentRod.rodToBobberString != null)
+        {
+            RTBLength.text = Mathf.Round(currentRod.rodToBobberString.maxDistance).ToString();
+        }
+
+        if (currentRod.bobberToHookString != null)
+        {
+            BTHLength.text = Mathf.Round(currentRod.bobberToHookString.maxDistance).ToString();
         }
     }
     public void InitializeRodUI(float lineSlack)

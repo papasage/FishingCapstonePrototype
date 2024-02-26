@@ -16,6 +16,7 @@ public class FishingRod : MonoBehaviour
     GameObject hook;
     GameObject firePoint;
     public GameObject hookedFish;
+    ControllerInputManager inputManager;
 
     [Header("Casting")]
     public float launchForce = 100f;
@@ -25,8 +26,8 @@ public class FishingRod : MonoBehaviour
     public float reelForce = .05f;
 
     [Header("Strings")]
-    SpringJoint rodToBobberString;
-    SpringJoint bobberToHookString;
+    public SpringJoint rodToBobberString;
+    public SpringJoint bobberToHookString;
     public float rodToBobberStringSlack = 20f; // this is how long the line is for casting. USED IN CASTING AS WELL AS LINE DISTANCE IN UICONTROLLER (PROGRESS BAR MAX)
     public float bobberToHookStringSlack = 5f; // this is how deep the line will go under the water
 
@@ -53,17 +54,51 @@ public class FishingRod : MonoBehaviour
     {
         InitializeRod();
         rodSpawner = GameObject.Find("FishingRodSpawner").GetComponent<FishingRodSpawner>();
+        inputManager = GameObject.Find("PlayerManager").GetComponent<ControllerInputManager>();
 
     }
 
     private void OnEnable()
     {
         ControllerInputManager.onReel += ReelInput;
-        //ControllerInputManager.onCast += CastInput;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
+    {
+        if (Input.GetButtonDown("A") && isReeled)
+        {
+            Cast(launchForce);
+        }
+
+        if (!RTBLineSnapped && !BTHLineSnapped)
+        {
+            CalculateLineHealth();
+        }
+            
+        if (floater.isFloating == true)
+        {
+            isCasting = false;
+
+            if (isCasted == true)
+            {
+                if (!RTBLineSnapped && !BTHLineSnapped)
+                {
+                    //CalculateLineTension();
+                    //Debug.Log("CalculateLineHealth()");
+                    //CalculateLineHealth(); // check damage vs health
+                }
+
+                return;
+            }
+            else
+            {
+                DropHook(bobberToHookStringSlack);
+                RumbleManager.instance.RumblePulse(0.5f, .1f, 0.25f);
+                AudioManager.instance.RodBobberSplash();
+            }
+        }
+    }
+    void FixedUpdate()
     {
         if (hook != null && firePoint != null)
         {
@@ -76,56 +111,26 @@ public class FishingRod : MonoBehaviour
             firePoint = GameObject.Find("FirePoint");
         }
 
-        if (Input.GetButtonDown("A") && isReeled)
+        if (rodToBobberString != null && rodToBobberString.maxDistance == 0)
+        {
+            if (!isReeled)
             {
-                Cast(launchForce);
-            }
+                isReeled = true;
+                isCasted = false;
 
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                //Reel(reelForce);
-            }
-
-            if (rodToBobberString != null && rodToBobberString.maxDistance == 0)
-            {
-                if (!isReeled)
+                if (!hookHasFish)
                 {
-                    isReeled = true;
-                    isCasted = false;
-
-                    if (!hookHasFish)
-                    {
                         gamestate.resetReady = true;
                         gamestate.Idle();
                         //Destroy(this.gameObject);
                         rodSpawner.DespawnRod();
                         //rodSpawner.SpawnRod();
-                    }
                 }
-
             }
 
-            if (floater.isFloating == true)
-            {
-                isCasting = false;
+        }
 
-                if (isCasted == true)
-                {
-                    if (!RTBLineSnapped && !BTHLineSnapped)
-                    {
-                    CalculateLineTension(); // calc damage
-                    CalculateLineHealth(); // check damage vs health
-                    }
-
-                    return;
-                }
-                else
-                {
-                    DropHook(bobberToHookStringSlack);
-                    RumbleManager.instance.RumblePulse(0.5f, .1f, 0.25f);
-                    AudioManager.instance.RodBobberSplash();
-            }
-            }
+        
 
     }
     public void InitializeRod()
@@ -163,10 +168,6 @@ public class FishingRod : MonoBehaviour
 
     Debug.Log("Rod Initialized");
     }
-    public void CastInput()
-    {
-        Cast(launchForce);
-    }
     void Cast(float strength)
     {
         isCasting = true;
@@ -191,10 +192,13 @@ public class FishingRod : MonoBehaviour
     }
     void Reel(float strength)
     {
-        if (isCasted && !RTBLineSnapped && !BTHLineSnapped)
+        if (isCasted)
         {
             //isCasted = false;
-            bobberToHookString.maxDistance = 0;
+            if (bobberToHookString != null && bobberToHookString.maxDistance != 0)
+            {
+                bobberToHookString.maxDistance = 0;
+            }
         }
 
         if (!isReeled)
@@ -204,6 +208,7 @@ public class FishingRod : MonoBehaviour
             AudioManager.instance.RodReel();
             RumbleManager.instance.RumblePulse(0.1f, .5f, 0.05f);
             rodToBobberString.maxDistance -= strength;
+            CalculateLineTension(); // calc damage
         }
     }
     public void Catch(BoidBehavior caught)
@@ -262,50 +267,99 @@ public class FishingRod : MonoBehaviour
     }
     void CalculateLineTension()
     {
-        if (Mathf.Round(rodToBobberString.currentForce.magnitude) > maxLineTension)
+
+        if (rodToBobberString != null)
         {
-            if (isRegeneratingRTB)
+            if (Mathf.Round(rodToBobberString.currentForce.magnitude) > maxLineTension)
             {
-                StopCoroutine(RegenerateRTBHealth());
-                isRegeneratingRTB = false;
+                if (isRegeneratingRTB)
+                {
+                    StopCoroutine(RegenerateRTBHealth());
+                    isRegeneratingRTB = false;
+                }
+                if (hookHasFish && inputManager.isReeling && rodToBobberLineHealth > 0)
+                {
+                    rodToBobberLineHealth--; // HIT ONCE
+
+                    if (Mathf.Round(rodToBobberString.currentForce.magnitude) > maxLineTension * 2 && rodToBobberLineHealth > 0) // is the magnitude more than double the max tension?
+                    {
+                        rodToBobberLineHealth--; // HIT TWICE
+                    }
+                }
+
             }
-            rodToBobberLineHealth--;
         }
-        else if (rodToBobberLineHealth < lineMaxHealth && !isRegeneratingRTB)
+        
+        if (bobberToHookString != null)
+        {
+            if (Mathf.Round(bobberToHookString.currentForce.magnitude) > maxLineTension)
+            {
+                if (isRegeneratingBTH)
+                {
+                    StopCoroutine(RegenerateBTHHealth());
+                    isRegeneratingBTH = false;
+                }
+                if (hookHasFish && inputManager.isReeling && bobberToHookLineHealth > 0)
+                {
+                    bobberToHookLineHealth--; // HIT ONCE
+
+                    if (Mathf.Round(bobberToHookString.currentForce.magnitude) > maxLineTension * 2 && bobberToHookLineHealth > 0) // is the magnitude more than double the max tension?
+                    {
+                        bobberToHookLineHealth--; // HIT TWICE
+                    }
+                }
+
+            }
+        }
+        
+    }
+    void CalculateLineHealth()
+    {
+        //Debug.Log(rodToBobberLineHealth.ToString());
+        //Debug.Log(bobberToHookLineHealth.ToString());
+
+        // CALCULATE ROD-TO-BOBBER HEALTH
+        if (rodToBobberLineHealth <= 0)
+        {
+            //Debug.Log("RTB Health Depleated: Stop Regen Coroutine");
+            StopCoroutine(RegenerateRTBHealth());
+            //Debug.Log("RTB Health Depleated: Firing SNAP Method");
+            SnapRTBLine();
+        }
+        else if (rodToBobberLineHealth > lineMaxHealth)
+        {
+            rodToBobberLineHealth = lineMaxHealth;
+        }
+        else if (rodToBobberLineHealth < lineMaxHealth && !isRegeneratingRTB && !inputManager.isReeling && rodToBobberLineHealth > 0f)
         {
             StartCoroutine(RegenerateRTBHealth());
         }
 
-        if (Mathf.Round(bobberToHookString.currentForce.magnitude) > maxLineTension)
-        {
-            if (isRegeneratingBTH)
-            {
-                StopCoroutine(RegenerateBTHHealth());
-                isRegeneratingBTH = false;
-            }
-            bobberToHookLineHealth--;
-        }
-        else if (bobberToHookLineHealth < lineMaxHealth && !isRegeneratingBTH)
-        {
-           StartCoroutine(RegenerateBTHHealth());
-        }
-    }
-    void CalculateLineHealth()
-    {
-        if (rodToBobberLineHealth <= 0)
-        {
-            SnapRTBLine();
-        }
-        
+        // CALCULATE BOBBER-TO-HOOK HEALTH
         if (bobberToHookLineHealth <= 0)
         {
+            //Debug.Log("BTH Health Depleated: Stop Regen Coroutine");
+            StopCoroutine(RegenerateBTHHealth());
+            //Debug.Log("BTH Health Depleated: Firing SNAP Method");
             SnapBTHLine();
         }
+        else if (bobberToHookLineHealth > lineMaxHealth)
+        {
+            bobberToHookLineHealth = lineMaxHealth;
+        }
+        else if (bobberToHookLineHealth < lineMaxHealth && !isRegeneratingBTH && !inputManager.isReeling && bobberToHookLineHealth > 0f)
+        {
+            StartCoroutine(RegenerateBTHHealth());
+        }
+
     }
     void SnapRTBLine()
     {
-        hookedFish.GetComponent<BoidBehavior>().Unhook();
-
+        if (hookedFish != null)
+        {
+            hookedFish.GetComponent<BoidBehavior>().Unhook();
+        }
+      
         RTBLineSnapped = true;
         rodToBobberString.breakForce = 0;
         AudioManager.instance.RodLineBreak();
@@ -327,7 +381,10 @@ public class FishingRod : MonoBehaviour
     }
     void SnapBTHLine()
     {
-        hookedFish.GetComponent<BoidBehavior>().Unhook();
+        if (hookedFish != null)
+        {
+            hookedFish.GetComponent<BoidBehavior>().Unhook();
+        }
 
         BTHLineSnapped = true;
         bobberToHookString.breakForce = 0;
@@ -339,7 +396,7 @@ public class FishingRod : MonoBehaviour
         isRegeneratingRTB = true;
         yield return new WaitForSeconds(2f);
 
-        while (rodToBobberLineHealth < lineMaxHealth)
+        while (rodToBobberLineHealth < lineMaxHealth && !inputManager.isReeling)
         {
             yield return new WaitForSeconds(0.1f);
             rodToBobberLineHealth++;
@@ -351,7 +408,7 @@ public class FishingRod : MonoBehaviour
         isRegeneratingBTH = true;
         yield return new WaitForSeconds(2f);
 
-        while (bobberToHookLineHealth < lineMaxHealth)
+        while (bobberToHookLineHealth < lineMaxHealth && !inputManager.isReeling)
         {
             yield return new WaitForSeconds(0.1f);
             bobberToHookLineHealth++;

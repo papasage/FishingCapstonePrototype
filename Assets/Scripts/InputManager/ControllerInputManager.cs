@@ -19,7 +19,7 @@ public class ControllerInputManager : MonoBehaviour
 
     //reel motion vaiables
     private Vector2 lastLeftStickValue = Vector2.zero;
-    private bool isReeling;
+    public bool isReeling;
     private bool canReel;
 
 
