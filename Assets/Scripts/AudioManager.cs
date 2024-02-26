@@ -239,7 +239,7 @@ public class AudioManager : MonoBehaviour
     //---------------------------------------------FILTERS--------
     public void EnableLowPassMusic()
     {
-        audioMixer.SetFloat(lowPassMusicParameter, 298f); // Adjust the value as needed
+        audioMixer.SetFloat(lowPassMusicParameter, 700f); // Adjust the value as needed
     }
     
     public void DisableLowPassMusic()
@@ -248,7 +248,7 @@ public class AudioManager : MonoBehaviour
     }
     public void EnableLowPassSFX()
     {
-        audioMixer.SetFloat(lowPassSFXParameter, 2369f); // Adjust the value as needed
+        audioMixer.SetFloat(lowPassSFXParameter, 2300f); // Adjust the value as needed
     }
     
     public void DisableLowPassSFX()

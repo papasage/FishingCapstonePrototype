@@ -210,7 +210,11 @@ public class GameStateMachine : StateMachine
         AudioManager.instance.MusicFishCaught();
 
         UI_CaughtPrompt.SetActive(true);
-        GameObject.Find("CaughtLabel").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
+        //GameObject.Find("CaughtData").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
+        GameObject.Find("CaughtData_Breed").GetComponent<TMP_Text>().text = caughtFish.maidenName + " Fish";
+        GameObject.Find("CaughtData_Size").GetComponent<TMP_Text>().text = caughtFish.sizeMultiplier.ToString();
+        GameObject.Find("CaughtData_Level").GetComponent<TMP_Text>().text = caughtFish.foodScore.ToString();
+        GameObject.Find("CaughtData_Song").GetComponent<TMP_Text>().text = caughtFish.favoriteSong;
 
         //Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
 
