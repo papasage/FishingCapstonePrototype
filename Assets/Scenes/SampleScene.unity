@@ -23606,7 +23606,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &815256427
 RectTransform:
   m_ObjectHideFlags: 0
@@ -50244,6 +50244,8 @@ MonoBehaviour:
   lineDistance: {fileID: 1975435276}
   colorHealthMax: {r: 1, g: 1, b: 1, a: 1}
   colorHealthDepleated: {r: 1, g: 0, b: 0, a: 1}
+  debugMode: 0
+  debugMenu: {fileID: 2105600940}
 --- !u!4 &1792789829
 Transform:
   m_ObjectHideFlags: 0
@@ -50504,7 +50506,7 @@ RectTransform:
   m_Father: {fileID: 1918045489}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -56544,7 +56546,8 @@ MonoBehaviour:
   mixerSFX: {fileID: 2471098562126257237, guid: 379892c59469d0945ba811d2a2def6b5, type: 2}
   mixerMusic: {fileID: 5434577758210814424, guid: 379892c59469d0945ba811d2a2def6b5, type: 2}
   mixerAmbience: {fileID: -1250312151382907423, guid: 379892c59469d0945ba811d2a2def6b5, type: 2}
-  lowPassFilterParameter: LowPassMusic
+  lowPassMusicParameter: LowPassMusic
+  lowPassSFXParameter: LowPassSFX
   peacefulMusic: {fileID: 8300000, guid: 4a3a006120b653a40944d814eb43bf93, type: 3}
   actionMusic: {fileID: 8300000, guid: 52e17321c750b9a43836847032f503cd, type: 3}
   failureMusic: {fileID: 8300000, guid: 5f096c9496e89154e8ffbbcfbd102eea, type: 3}
@@ -58642,7 +58645,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2105600941
 RectTransform:
   m_ObjectHideFlags: 0

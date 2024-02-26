@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 
 public class UIController : MonoBehaviour
 {
+    public static UIController instance;
     FishingRod currentRod;
 
     [Header("Boid Counter Data")]
@@ -46,6 +47,10 @@ public class UIController : MonoBehaviour
     [SerializeField] public Color colorHealthMax;
     [SerializeField] public Color colorHealthDepleated;
 
+    [Header("Debug Menu")]
+    public bool debugMode = false;
+    [SerializeField] GameObject debugMenu;
+
 
     private void OnEnable()
     {
@@ -67,6 +72,13 @@ public class UIController : MonoBehaviour
         GameIdleState.onStateIdle += HideReelProgressBar;
     }
 
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+    }
     private void Start()
     {
         UpdateBoidCount();
@@ -90,7 +102,14 @@ public class UIController : MonoBehaviour
             }
             CalculateLineLength();
         }
-        
+
+        if (!debugMode)
+        {
+            debugMenu.SetActive(false);
+        }
+        else debugMenu.SetActive(true);
+
+
     }
 
     void UpdateBoidCount()

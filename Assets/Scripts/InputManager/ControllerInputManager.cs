@@ -33,6 +33,7 @@ public class ControllerInputManager : MonoBehaviour
         XButton();
         YButton();
         StartButton();
+        SelectButton();
         
         Reeling();
 
@@ -116,7 +117,17 @@ public class ControllerInputManager : MonoBehaviour
     {
         if (Input.GetButtonDown("Start"))
         {
-            //Debug.Log("Start Down");
+            //toggle debug mode
+
+        }
+    }
+    void SelectButton()
+    {
+        if (Input.GetButtonDown("Select"))
+        {
+            //toggle debug mode
+            UIController.instance.debugMode = !UIController.instance.debugMode;
+
         }
     }
 
