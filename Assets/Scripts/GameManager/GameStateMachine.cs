@@ -115,8 +115,10 @@ public class GameStateMachine : StateMachine
     public void Idle()
     {
         ChangeState(IdleState);
-        //rodSpawner.DespawnRod();
-        
+
+        AudioManager.instance.AmbienceDock();
+        AudioManager.instance.MusicPeaceful();
+
         resetReady = true;
 
         UI_EquipPrompt.SetActive(true);
@@ -141,6 +143,7 @@ public class GameStateMachine : StateMachine
     public void Bite()
     {
         ChangeState(BiteState);
+        AudioManager.instance.MusicAction();
         StartCoroutine(BiteCoroutine());
     }
     public void Reeling()
@@ -204,7 +207,7 @@ public class GameStateMachine : StateMachine
         trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
         caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
 
-        AudioManager.instance.FishFanfare();
+        AudioManager.instance.MusicFishCaught();
 
         UI_CaughtPrompt.SetActive(true);
         GameObject.Find("CaughtLabel").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;

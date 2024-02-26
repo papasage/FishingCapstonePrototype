@@ -387,8 +387,12 @@ public class FishingRod : MonoBehaviour
         }
 
         BTHLineSnapped = true;
+
         bobberToHookString.breakForce = 0;
+
+        AudioManager.instance.MusicFailure();
         AudioManager.instance.RodLineBreak();
+
         RumbleManager.instance.RumblePulse(0.8f, .9f, 0.5f);
     }
     IEnumerator RegenerateRTBHealth()

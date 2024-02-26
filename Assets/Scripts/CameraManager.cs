@@ -12,9 +12,14 @@ using static GameScoringState;
 
 public class CameraManager : MonoBehaviour
 {
-    
+    public static CameraManager Instance;
+
     private Camera playerCamera;
     [SerializeField] float lerpSpeed = 2f;
+
+    public Transform waterLevel;
+    public bool isUnderWater;
+
 
     [Header("Camera Position Transforms")]
     [SerializeField] Transform idleCameraPosition;
@@ -28,7 +33,13 @@ public class CameraManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+
         playerCamera = GameObject.FindObjectOfType<Camera>();
+        waterLevel = GameObject.Find("WaterSurface").transform;
     }
     private void OnEnable()
     {
@@ -40,6 +51,15 @@ public class CameraManager : MonoBehaviour
         GameLandingState.onStateLanding += StateIsLanding;
         GameFightingState.onStateFighting += StateIsFighting;
         GameScoringState.onStateScoring += StateIsScoring;
+    }
+
+    private void Update()
+    {
+        if (playerCamera.transform.position.y < waterLevel.position.y)
+        {
+            isUnderWater = true;
+        }
+        else isUnderWater = false;
     }
 
     void LerpToPosition(Transform targetPosition)
