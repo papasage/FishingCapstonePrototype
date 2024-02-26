@@ -1,8 +1,12 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class FPSCounter : MonoBehaviour
 {
+    [SerializeField] TMP_Text UIFPSCountText;
     private float deltaTime = 0.0f;
+    private float FPS;
     private GUIStyle style = new GUIStyle();
 
     private void Start()
@@ -14,6 +18,16 @@ public class FPSCounter : MonoBehaviour
     private void Update()
     {
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+
+        FPS = fps();
+
+        if (FPS < 60)
+        {
+            UIFPSCountText.color = Color.red;
+        }
+        else { UIFPSCountText.color = Color.white; }
+
+        UIFPSCountText.text = fps().ToString();
     }
 
     private void OnGUI()
@@ -27,6 +41,13 @@ public class FPSCounter : MonoBehaviour
 
         string text = $"FPS: {fps}";
 
-        GUI.Label(new Rect(10, 10, 100, 20), text, style);
+       // GUI.Label(new Rect(10, 10, 100, 20), text, style);
+    }
+
+    private int fps()
+    {
+        int fps = Mathf.RoundToInt(1.0f / deltaTime);
+
+        return fps;
     }
 }

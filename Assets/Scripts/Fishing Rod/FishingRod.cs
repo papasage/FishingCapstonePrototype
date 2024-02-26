@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishingRod : MonoBehaviour
@@ -11,7 +12,9 @@ public class FishingRod : MonoBehaviour
     GameObject hookArt;
     BoidBehavior caughtFish;
     FishingRodSpawner rodSpawner;
-
+    LineRenderer lineRenderer;
+    GameObject hook;
+    GameObject firePoint;
     public GameObject hookedFish;
 
     [Header("Casting")]
@@ -34,11 +37,8 @@ public class FishingRod : MonoBehaviour
     public float bobberToHookLineHealth;
     public bool RTBLineSnapped;
     public bool BTHLineSnapped;
-
-    [Header("Line Renderer")]
-    LineRenderer lineRenderer;
-    GameObject hook;
-    GameObject firePoint;
+    bool isRegeneratingRTB = false;
+    bool isRegeneratingBTH = false;
 
     [Header("Bools")]
     public bool isReeled;
@@ -48,8 +48,8 @@ public class FishingRod : MonoBehaviour
     public bool bobberFloating;
 
 
-        // Start is called before the first frame update
-        void Start()
+    // Start is called before the first frame update
+    void Start()
     {
         InitializeRod();
         rodSpawner = GameObject.Find("FishingRodSpawner").GetComponent<FishingRodSpawner>();
@@ -128,7 +128,6 @@ public class FishingRod : MonoBehaviour
             }
 
     }
-
     public void InitializeRod()
     {
         //init GameManager
@@ -180,7 +179,6 @@ public class FishingRod : MonoBehaviour
         rodToBobberString.maxDistance = rodToBobberStringSlack;
         RumbleManager.instance.RumblePulse(0.1f, .1f, 1.5f);
     }
-
     void DropHook(float hookWeight)
     {
         isCasted = true;
@@ -208,16 +206,15 @@ public class FishingRod : MonoBehaviour
             rodToBobberString.maxDistance -= strength;
         }
     }
-
     public void Catch(BoidBehavior caught)
     {
         caughtFish = caught;
         gamestate.Landing(caughtFish);
     }
-
     public void Bite()
     {
         gamestate.Bite();
+        //bobberToHookString.spring = 70f;
         RumbleManager.instance.RumblePulse(1f, 1f, 1f);
         AudioManager.instance.FishHooked();
         if (hookArt != null)
@@ -225,7 +222,6 @@ public class FishingRod : MonoBehaviour
             hookArt.SetActive(false);
         }
     }
-
     void SetLineRendererPositions()
     {
         //if no lines are snapped
@@ -264,20 +260,36 @@ public class FishingRod : MonoBehaviour
         }
 
     }
-
     void CalculateLineTension()
     {
         if (Mathf.Round(rodToBobberString.currentForce.magnitude) > maxLineTension)
         {
+            if (isRegeneratingRTB)
+            {
+                StopCoroutine(RegenerateRTBHealth());
+                isRegeneratingRTB = false;
+            }
             rodToBobberLineHealth--;
+        }
+        else if (rodToBobberLineHealth < lineMaxHealth && !isRegeneratingRTB)
+        {
+            StartCoroutine(RegenerateRTBHealth());
         }
 
         if (Mathf.Round(bobberToHookString.currentForce.magnitude) > maxLineTension)
         {
+            if (isRegeneratingBTH)
+            {
+                StopCoroutine(RegenerateBTHHealth());
+                isRegeneratingBTH = false;
+            }
             bobberToHookLineHealth--;
         }
+        else if (bobberToHookLineHealth < lineMaxHealth && !isRegeneratingBTH)
+        {
+           StartCoroutine(RegenerateBTHHealth());
+        }
     }
-
     void CalculateLineHealth()
     {
         if (rodToBobberLineHealth <= 0)
@@ -290,7 +302,6 @@ public class FishingRod : MonoBehaviour
             SnapBTHLine();
         }
     }
-
     void SnapRTBLine()
     {
         hookedFish.GetComponent<BoidBehavior>().Unhook();
@@ -298,6 +309,7 @@ public class FishingRod : MonoBehaviour
         RTBLineSnapped = true;
         rodToBobberString.breakForce = 0;
         AudioManager.instance.RodLineBreak();
+        RumbleManager.instance.RumblePulse(0.8f, .9f, 0.5f);
 
         // Change the name of the bobber to avoid conflicts
         bobber.name = "BrokenBobber";
@@ -320,6 +332,30 @@ public class FishingRod : MonoBehaviour
         BTHLineSnapped = true;
         bobberToHookString.breakForce = 0;
         AudioManager.instance.RodLineBreak();
+        RumbleManager.instance.RumblePulse(0.8f, .9f, 0.5f);
     }
+    IEnumerator RegenerateRTBHealth()
+    {
+        isRegeneratingRTB = true;
+        yield return new WaitForSeconds(2f);
 
+        while (rodToBobberLineHealth < lineMaxHealth)
+        {
+            yield return new WaitForSeconds(0.1f);
+            rodToBobberLineHealth++;
+        }
+        isRegeneratingRTB = false;
+    }
+    IEnumerator RegenerateBTHHealth()
+    {
+        isRegeneratingBTH = true;
+        yield return new WaitForSeconds(2f);
+
+        while (bobberToHookLineHealth < lineMaxHealth)
+        {
+            yield return new WaitForSeconds(0.1f);
+            bobberToHookLineHealth++;
+        }
+        isRegeneratingBTH = false;
+    }
 }

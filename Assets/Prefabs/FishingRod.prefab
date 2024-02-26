@@ -1415,9 +1415,12 @@ MonoBehaviour:
   reelForce: 0.09
   rodToBobberStringSlack: 20
   bobberToHookStringSlack: 2
-  maxLineTension: 60
-  rodToBobberLineDamage: 0
-  bobberToHookLineDamage: 0
+  maxLineTension: 50
+  lineMaxHealth: 100
+  rodToBobberLineHealth: 0
+  bobberToHookLineHealth: 0
+  RTBLineSnapped: 1
+  BTHLineSnapped: 1
   isReeled: 0
   isCasting: 0
   isCasted: 0
