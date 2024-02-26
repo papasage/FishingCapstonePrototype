@@ -750,12 +750,18 @@ public class BoidBehavior : MonoBehaviour
             
             if (fishingRod.rodToBobberString.maxDistance < fishingRod.rodToBobberStringSlack)
             {
-                fishingRod.rodToBobberString.maxDistance += 0.1f;
+                fishingRod.rodToBobberString.maxDistance += (0.05f * foodScore);
             }
 
             if (fishingRod.rodToBobberString.maxDistance >= fishingRod.rodToBobberStringSlack)
             {
                 fishingRod.bobberToHookLineHealth -= 3f; // HIT 3 TIMES IF THE DISTANCE IS MAXED OUT!
+            }
+
+            if (fishingRod.RTBLineSnapped || fishingRod.BTHLineSnapped)
+            {
+                tuggingTheLine = false;
+                break;
             }
 
             tuggingTheLine = false;

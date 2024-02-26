@@ -195,10 +195,10 @@ public class FishingRod : MonoBehaviour
         if (isCasted)
         {
             //isCasted = false;
-            if (bobberToHookString != null && bobberToHookString.maxDistance != 0)
-            {
-                bobberToHookString.maxDistance = 0;
-            }
+           // if (bobberToHookString != null && bobberToHookString.maxDistance != 0)
+           // {
+           //     bobberToHookString.maxDistance = 0;
+           // }
         }
 
         if (!isReeled)

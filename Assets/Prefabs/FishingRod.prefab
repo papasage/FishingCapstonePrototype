@@ -945,6 +945,7 @@ MonoBehaviour:
   isPanicking: 0
   isHooked: 1
   isHookSet: 0
+  tuggingTheLine: 0
   mesh: {fileID: 0}
   isLure: 0
   swimSpeed: 0
@@ -1413,8 +1414,10 @@ MonoBehaviour:
   launchForce: 100
   launchDirection: {x: 1, y: 0, z: 1}
   reelForce: 0.09
+  rodToBobberString: {fileID: 0}
+  bobberToHookString: {fileID: 0}
   rodToBobberStringSlack: 20
-  bobberToHookStringSlack: 2
+  bobberToHookStringSlack: 5
   maxLineTension: 50
   lineMaxHealth: 100
   rodToBobberLineHealth: 0
