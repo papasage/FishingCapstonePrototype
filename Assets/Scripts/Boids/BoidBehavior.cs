@@ -33,6 +33,7 @@ public class BoidBehavior : MonoBehaviour
     private GameObject hook;
     private FishingRod fishingRod;
     private LineManager bobber;
+    private float waterLevel;
 
 
     [Header("Bool States")]
@@ -132,34 +133,39 @@ public class BoidBehavior : MonoBehaviour
         {
             ApplySwimBehavior();
             currentSpeed = swimSpeed;
-            ApplyObstacleAvoidanceBehavior();
-            ApplyUprightBehavior();
 
-            if (isSchooling && !isLure && !isHooked)
-            {
-                ApplySchoolingBehavior();
-            }
 
-            if (isHungry && !isLure && !isHooked)
+            if (!isHooked)
             {
-                ApplyHuntingBehavior();
-            }
 
-            if (isBeingHunted && predatorDistance.magnitude < perceptionRadius && !isLure && !isHooked)
-            {
-                if (!isPanicking)
+                ApplyUprightBehavior();
+                ApplyObstacleAvoidanceBehavior();
+
+                if (isSchooling)
                 {
-                    StartCoroutine(PanicCoroutine());
+                    ApplySchoolingBehavior();
                 }
-                
+
+                if (isHungry)
+                {
+                    ApplyHuntingBehavior();
+                }
+
+                if (isBeingHunted && predatorDistance.magnitude < perceptionRadius)
+                {
+                    if (!isPanicking)
+                    {
+                        StartCoroutine(PanicCoroutine());
+                    }
+                }
+
+                if (neighbors == null || neighbors.Count <= 0 && !isHungry)
+                {
+                    ApplyDeviateBehavior();
+                }
             }
 
-            if(neighbors == null || neighbors.Count <= 0 && !isHungry && !isLure && !isHooked)
-            {
-                ApplyDeviateBehavior(); 
-            }
-
-            if(isHooked)
+            else if (isHooked)
             {
                 ApplyHookedBehavior();
             }
@@ -239,6 +245,9 @@ public class BoidBehavior : MonoBehaviour
         {
             // ART
             mesh = fish.mesh;
+
+            //FIND WATER LEVEL
+
 
             //ABILITY STATS
             isLure = fish.isLure;
@@ -465,8 +474,35 @@ public class BoidBehavior : MonoBehaviour
         
         if (fishingRod != null)
         {
-            //Move away from the fishing rod!
-            transform.LookAt( - fishingRod.transform.position );
+            //move away from rod
+            transform.LookAt(-fishingRod.transform.position);
+
+
+
+
+
+
+
+            //Tick time
+            float timeCount = 0f;
+            timeCount += Time.deltaTime;
+
+            //Calculate the target rotation
+            Quaternion startRotation = transform.rotation;
+            Vector3 rotationVector = fishingRod.transform.position - transform.position;
+            Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
+
+            //Apply the rotation
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
+
+
+
+
+
+
+
+            Debug.DrawLine(transform.position, transform.position + transform.forward * 2.0f, Color.green);
+            Debug.DrawLine(transform.position, fishingRod.transform.position - transform.position * 2.0f, Color.magenta);
 
             if (!ControllerInputManager.instance.isReeling)
             {
@@ -535,18 +571,22 @@ public class BoidBehavior : MonoBehaviour
 
         isHungry = false;
         StartCoroutine(EncroachingHunger());
+        
+        if (!boid.isLure && !boid.isHooked)
+        {
+            foodScore++;
+            sizeMultiplier += .5f;
+            SetSize(sizeMultiplier);
+        }
 
-        foodScore++;
-        sizeMultiplier+=.5f;
-        SetSize(sizeMultiplier);
-
-        if (boid.isHooked == true)
+        if (boid.isHooked)
         {
             
             isHookSet = false;
             isHooked = true;
             
             comboMeter += boid.comboMeter;
+            AudioManager.instance.Combo(comboMeter - 1f);
             Debug.Log("COMBO!  x" + comboMeter);
         }
 
@@ -698,7 +738,7 @@ public class BoidBehavior : MonoBehaviour
         {
             if (neighbor.GetComponent<BoidBehavior>().isLure || neighbor.GetComponent<BoidBehavior>().isHooked)
             {
-                Debug.Log("FISH SAW BAIT");
+                Debug.Log("A Level " + foodScore + " " + maidenName + " FISH SAW BAIT");
 
                 if(neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
                 {
@@ -751,6 +791,7 @@ public class BoidBehavior : MonoBehaviour
         }
 
         // Ensure the final rotation is set
+        
         transform.rotation = targetRotation;
     }
 
