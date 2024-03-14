@@ -931,15 +931,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   isHungry: 0
-  isSchooling: 0
+  isElderly: 0
   foundFood: 0
   isDead: 0
-  isDeviating: 0
   isBeingHunted: 0
-  isPanicking: 0
   isHooked: 1
   isHookSet: 0
-  tuggingTheLine: 0
+  isSchooling: 0
+  isDeviating: 0
+  isFightingBack: 0
+  isPanicking: 0
   mesh: {fileID: 0}
   isLure: 0
   swimSpeed: 0
@@ -958,6 +959,8 @@ MonoBehaviour:
   hungryInSeconds: 0
   biteRange: 0
   decompositionTime: 0
+  target: {fileID: 0}
+  comboMeter: 1
   cohesionWeight: 0
   separationWeight: 0
   alignmentWeight: 0
@@ -1219,7 +1222,7 @@ GameObject:
   - component: {fileID: 1341510434084120553}
   - component: {fileID: 4553280548797264563}
   - component: {fileID: 844491048448310675}
-  - component: {fileID: 7299703889211531315}
+  - component: {fileID: 8529713054470144409}
   m_Layer: 0
   m_Name: Hook
   m_TagString: Untagged
@@ -1341,8 +1344,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!138 &7299703889211531315
-FixedJoint:
+--- !u!153 &8529713054470144409
+ConfigurableJoint:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1350,6 +1353,93 @@ FixedJoint:
   m_GameObject: {fileID: 4367431634049567263}
   m_ConnectedBody: {fileID: 7828862538939474974}
   m_ConnectedArticulationBody: {fileID: 0}
+  m_Anchor: {x: 0, y: 0.49999237, z: 0}
+  m_Axis: {x: 1, y: 0, z: 0}
+  m_AutoConfigureConnectedAnchor: 1
+  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  serializedVersion: 3
+  m_SecondaryAxis: {x: 0, y: 1, z: 0}
+  m_XMotion: 0
+  m_YMotion: 0
+  m_ZMotion: 0
+  m_AngularXMotion: 0
+  m_AngularYMotion: 0
+  m_AngularZMotion: 0
+  m_LinearLimitSpring:
+    spring: 0
+    damper: 0
+  m_LinearLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularXLimitSpring:
+    spring: 0
+    damper: 0
+  m_LowAngularXLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_HighAngularXLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularYZLimitSpring:
+    spring: 0
+    damper: 0
+  m_AngularYLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_AngularZLimit:
+    limit: 0
+    bounciness: 0
+    contactDistance: 0
+  m_TargetPosition: {x: 0, y: 0, z: 0}
+  m_TargetVelocity: {x: 0, y: 0, z: 0}
+  m_XDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_YDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_ZDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_TargetRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_TargetAngularVelocity: {x: 0, y: 0, z: 0}
+  m_RotationDriveMode: 0
+  m_AngularXDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_AngularYZDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_SlerpDrive:
+    serializedVersion: 4
+    positionSpring: 0
+    positionDamper: 0
+    maximumForce: 3.4028233e+38
+    useAcceleration: 0
+  m_ProjectionMode: 0
+  m_ProjectionDistance: 0.1
+  m_ProjectionAngle: 180
+  m_ConfiguredInWorldSpace: 0
+  m_SwapBodies: 0
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_EnableCollision: 0

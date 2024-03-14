@@ -30,7 +30,7 @@ public class BoidBehavior : MonoBehaviour
     private Vector3 foodTarget;          // This is where we are storing the current prey target, if there is one
     private float currentSpeed;          // Storing the current movement speed to use in ApplySwimBehavior();
     private Vector3 predatorDistance;
-    private GameObject hook;
+    private ConfigurableJoint hook;
     private FishingRod fishingRod;
     private LineManager bobber;
     private float waterLevel;
@@ -475,7 +475,7 @@ public class BoidBehavior : MonoBehaviour
         if (fishingRod != null)
         {
             //move away from rod
-            transform.LookAt(-fishingRod.transform.position);
+            //transform.LookAt(-fishingRod.transform.position);
 
 
 
@@ -484,16 +484,16 @@ public class BoidBehavior : MonoBehaviour
 
 
             //Tick time
-            float timeCount = 0f;
-            timeCount += Time.deltaTime;
+            //float timeCount = 0f;
+            //timeCount += Time.deltaTime;
 
             //Calculate the target rotation
-            Quaternion startRotation = transform.rotation;
-            Vector3 rotationVector = fishingRod.transform.position - transform.position;
-            Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
+            //Quaternion startRotation = transform.rotation;
+            //Vector3 rotationVector = fishingRod.transform.position - transform.position;
+            //Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
 
             //Apply the rotation
-            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
+            //transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
 
 
 
@@ -524,9 +524,14 @@ public class BoidBehavior : MonoBehaviour
         }
 
         isHookSet = true;
-        hook = GameObject.Find("Hook");
+        hook = GameObject.Find("Hook").GetComponent<ConfigurableJoint>();
         transform.position = hook.transform.position;
-        hook.GetComponent<FixedJoint>().connectedBody = rb;
+        hook.connectedBody = rb;
+
+        hook.angularXMotion = ConfigurableJointMotion.Free;
+        hook.angularYMotion = ConfigurableJointMotion.Free;
+        hook.angularZMotion = ConfigurableJointMotion.Free;
+
 
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = true;
@@ -553,7 +558,8 @@ public class BoidBehavior : MonoBehaviour
         StopCoroutine(EncroachingAge());
         isElderly = false;
         StartCoroutine(EncroachingHunger());
-        hook.GetComponent<FixedJoint>().connectedBody = null;
+        hook = GameObject.Find("Hook").GetComponent<ConfigurableJoint>();
+        hook.connectedBody = null;
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = false;
         fishingRod.hookedFish = null;
