@@ -22,6 +22,7 @@ public class Fish : ScriptableObject
     [Header("Food Stats")]
     public float foodScore = 1f;                    // Rename this to Predator Score. The Higher the number, the larger the fish they can eat
     public float foodScoreMax = 4f;                 // This is the maximum foodScore that the fish can hit before they begin to die of old age.
+    public float scoreDifferenceThreshold = 0.0f;   // this is the amount that your foodScore has to be greater by in order to eat another fish.
     public float minSizeMultiplier = 0.5f;          // The minimum possible factor for size generation
     public float maxSizeMultiplier = 1.5f;          // The maximum possible factor for size generation
     public float hungerWeight = 1f;                 // TODO: The factor for how aggressively the fish will move towards prey. x1 is default movement speed.
@@ -39,4 +40,7 @@ public class Fish : ScriptableObject
     public string maidenName;
     public string favoriteSong;
     public int luckyNumber;
+
+    [Header("Starting Modifier")]
+    public bool isSchoolingOnSpawn;
 }

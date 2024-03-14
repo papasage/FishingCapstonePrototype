@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: NeoFish
   m_EditorClassIdentifier: 
   mesh: {fileID: 919132149155446097, guid: 664ec18f889f4df43a72e5ee650d99b5, type: 3}
+  isLure: 0
   swimSpeed: 26
   swimHuntSpeed: 35
   swimEscapeSpeed: 33
@@ -21,8 +22,9 @@ MonoBehaviour:
   perceptionRadius: 8
   avoidanceRadius: 4.74
   avoidanceSeconds: 1.5
-  foodScore: 1
+  foodScore: 6
   foodScoreMax: 4
+  scoreDifferenceThreshold: 0
   minSizeMultiplier: 0.5
   maxSizeMultiplier: 1.5
   hungerWeight: 1
@@ -36,3 +38,4 @@ MonoBehaviour:
   maidenName: Jack
   favoriteSong: Can't Stop - Red Hot Chilli Peppers
   luckyNumber: 155
+  isSchoolingOnSpawn: 1

@@ -38,15 +38,18 @@ public class BoidBehavior : MonoBehaviour
     [Header("Bool States")]
     
     public bool isHungry = false;        // Trigger for ApplyHuntingBehavior(). Set by the COROUTUNE EncroachingHunger()
-    public bool isSchooling = true;      // Trigger for ApplySchoolingBehavior(). Currently this is always true
+    public bool isElderly = false;
     public bool foundFood = false;       // When using ApplyHuntingHehavior(), the fish is using DetectFood(). If a neighbor is found with a lower foodScore, this is the trigger to start the hunt.
     public bool isDead = false;          // A dead fish is a fish with no scriptable object. Currently called by other attacking fish when they Eat()
-    public bool isDeviating = false;     // Decides when a fish will make random micro movements for realstic wandering.
     public bool isBeingHunted = false;   // Trigger for Panic. Set by the predator fish's ApplyHuntingBehavior().
-    public bool isPanicking = false;     // This is checked before the Panic coroutine is fired. If it is panicking, dont try to set it again.
     public bool isHooked = false;        // Trigger for ApplyHookedBehavior().
     public bool isHookSet = false;      // This is checked before the SetHook coroutine is fired. If it is set, dont try to set it again.
-    public bool tuggingTheLine = false;
+
+    [Header("Bool Behaviors")]
+    public bool isSchooling = true;      // Trigger for ApplySchoolingBehavior(). Currently this is always true
+    public bool isDeviating = false;     // Decides when a fish will make random micro movements for realstic wandering.
+    public bool isFightingBack = false;
+    public bool isPanicking = false;     // This is checked before the Panic coroutine is fired. If it is panicking, dont try to set it again.
 
     public delegate void OnDeath();
     public static OnDeath onDeath;
@@ -72,12 +75,14 @@ public class BoidBehavior : MonoBehaviour
     [Header("Food Stats")]
     public float foodScore;             // Food chain placement. Fish can only eat fish with lower foodScores.
     public float foodScoreMax;          // This is the maximum foodScore that the fish can hit before they begin to die of old age.
-    public float scoreDifferenceThreshold = 1.5f; // this is the amount that your foodScore has to be greater by in order to eat another fish.
+    public float scoreDifferenceThreshold; // this is the amount that your foodScore has to be greater by in order to eat another fish.
     public float sizeMultiplier;        // Genetic lottery. Randomly rolled on birth from a range set by that fish's breed (in scriptable object)
     public float hungerWeight;          // UNUSED: Potentially increases the aggression/speed of the fish over time as they get hungry.
     public float hungryInSeconds;       // The amount of time in seconds it takes to become hungry
     public float biteRange;             // Range a fish must be to Eat() another fish when hunting. 
     public float decompositionTime;     // Variable for how long it takes to start decomposition
+    public GameObject target;
+    public float comboMeter = 1;        //this will increase when a fish eats a hooked fish.
     //public float avoidSpeed;
 
     [Header("Schooling Behavior Stats")]
@@ -254,6 +259,7 @@ public class BoidBehavior : MonoBehaviour
             }
             else foodScore = fish.foodScore;
             foodScoreMax = fish.foodScoreMax;
+            scoreDifferenceThreshold = fish.scoreDifferenceThreshold;
             hungerWeight = fish.hungerWeight;
             hungryInSeconds = fish.hungryInSeconds;
             biteRange = fish.biteRange;
@@ -264,6 +270,7 @@ public class BoidBehavior : MonoBehaviour
             separationWeight = fish.separationWeight;
             alignmentWeight = fish.alignmentWeight;
             alignmentSpeed = fish.alignmentSpeed;
+            isSchooling = fish.isSchoolingOnSpawn;
 
             //FISH FACTS
             maidenName = fish.maidenName;
@@ -277,6 +284,11 @@ public class BoidBehavior : MonoBehaviour
             //Fill in the name tag on the prefab
             //label.text = maidenName;
             //label.text = foodScore.ToString();
+
+            if (isLure)
+            {
+                comboMeter = 0;
+            }
         }
 
         //If there is no scriptable object found, enable gravity. A fish skeleton will sink to the bottom.
@@ -392,15 +404,12 @@ public class BoidBehavior : MonoBehaviour
         rb.velocity += finalSteering * Time.deltaTime;
 
     }
+
+    //I WANT TO STOP SCANNING NEIGHBORS WHEN I FIND FOOD
+
     void ApplyHuntingBehavior()
     {
-        //Fill the neighbor list using this GetNeighbors method
-        List<GameObject> neighbors = GetNeighborsWithinPerceptionRange();
-
-        //Check the neighbors for a fish with a lower food score than you
-        GameObject target = DetectFood(neighbors);
-
-        if (foundFood)
+        if (target != null)
         {
             currentSpeed = swimHuntSpeed;
             transform.LookAt(target.transform.position);
@@ -414,8 +423,23 @@ public class BoidBehavior : MonoBehaviour
             if (toTarget.magnitude <= biteRange)
             {
                 Eat(targetBoid);
+                target = null;
+                
             }
+
+            return;
         }
+
+        //Fill the neighbor list using this GetNeighbors method
+        List<GameObject> neighbors = GetNeighborsWithinPerceptionRange();
+
+        //Check the neighbors for a fish with a lower food score than you
+        //Debug.Log("Detecting food....");
+        if (!foundFood)
+        {
+            target = DetectFood(neighbors);
+        }
+        
     }
     void ApplyUprightBehavior()
     {
@@ -460,6 +484,7 @@ public class BoidBehavior : MonoBehaviour
         if (!isLure)
         {
             chatBubble.playEmote(ChatBubble.EmoteType.Hooked);
+            foundFood = false;
         }
 
         isHookSet = true;
@@ -470,13 +495,28 @@ public class BoidBehavior : MonoBehaviour
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = true;
         fishingRod.hookedFish = this.gameObject;
-        fishingRod.Bite();   
+        fishingRod.Bite();
+
+        //Please dont die of old age while on the hook!
+        StopCoroutine(EncroachingAge());
+        StartCoroutine(PanicCoroutine());
+
     }
     public void Unhook()
     {
-        StopCoroutine(TugTheLineCoroutine());
         isHooked = false;
         isHookSet = false;
+
+        //Fish escaped, end the fight
+        StopCoroutine(TugTheLineCoroutine());
+        isFightingBack = false;
+
+        //The escaped fish unlocks hidden potential! Max food score up. (Exploitable??)
+        StopCoroutine(EncroachingHunger());
+        foodScoreMax++;
+        StopCoroutine(EncroachingAge());
+        isElderly = false;
+        StartCoroutine(EncroachingHunger());
         hook.GetComponent<FixedJoint>().connectedBody = null;
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = false;
@@ -502,7 +542,12 @@ public class BoidBehavior : MonoBehaviour
 
         if (boid.isHooked == true)
         {
+            
+            isHookSet = false;
             isHooked = true;
+            
+            comboMeter += boid.comboMeter;
+            Debug.Log("COMBO!  x" + comboMeter);
         }
 
         boid.Die();
@@ -651,12 +696,19 @@ public class BoidBehavior : MonoBehaviour
 
         foreach (GameObject neighbor in neighbors)
         {
-            if (neighbor.GetComponent<BoidBehavior>().isLure)
+            if (neighbor.GetComponent<BoidBehavior>().isLure || neighbor.GetComponent<BoidBehavior>().isHooked)
             {
-                foundFood = true;
-                target = neighbor;
-                Debug.DrawLine(transform.position, target.transform.position, Color.red);
-                break;
+                Debug.Log("FISH SAW BAIT");
+
+                if(neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
+                {
+                    Debug.Log("FISH WANTS BAIT");
+                    foundFood = true;
+                    target = neighbor;
+                    Debug.DrawLine(transform.position, target.transform.position, Color.red);
+                    break;
+                }
+
             }
             //Check if the food score is lower than yours, but not below zero (dead)
             if (neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
@@ -723,19 +775,23 @@ public class BoidBehavior : MonoBehaviour
 
     IEnumerator PanicCoroutine()
     {
-        chatBubble.playEmote(ChatBubble.EmoteType.Scared);
-        currentSpeed = swimEscapeSpeed;
         isPanicking = true;
+        chatBubble.playEmote(ChatBubble.EmoteType.Scared);
+        
+        
+        currentSpeed = swimEscapeSpeed;
         isHungry = false;
+        foundFood = false;
+  
+
 
         float elapsedTime = 0f;
-
         while (elapsedTime < 10f)
         {
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
+        
         isPanicking = false;
         currentSpeed = swimSpeed;
         StartCoroutine(EncroachingHunger());
@@ -744,28 +800,47 @@ public class BoidBehavior : MonoBehaviour
     }
     IEnumerator TugTheLineCoroutine()
     {
-        while (fishingRod != null && !tuggingTheLine)
+        while (!isFightingBack)
         {
-            tuggingTheLine = true;
+            isFightingBack = true;
+
+            //TESTING VARIABLE SCHOOLING BEHAVIOR: Stop Schooling
+            isSchooling = false;
+
             yield return new WaitForSeconds(0.1f);
             
-            if (fishingRod.rodToBobberString.maxDistance < fishingRod.rodToBobberStringSlack)
+            if(fishingRod != null) //did we lose the rod in the last .1 second check
             {
-                fishingRod.rodToBobberString.maxDistance += (0.05f * foodScore);
-            }
+                if (fishingRod.rodToBobberString.maxDistance < fishingRod.rodToBobberStringSlack)
+                {
+                    fishingRod.rodToBobberString.maxDistance += (0.05f * foodScore);
+                    Debug.Log("Tugging The Line!");
+                }
 
-            if (fishingRod.rodToBobberString.maxDistance >= fishingRod.rodToBobberStringSlack)
-            {
-                fishingRod.bobberToHookLineHealth -= 3f; // HIT 3 TIMES IF THE DISTANCE IS MAXED OUT!
-            }
+                if (fishingRod.rodToBobberString.maxDistance >= fishingRod.rodToBobberStringSlack)
+                {
+                    fishingRod.bobberToHookLineHealth -= 3f; // HIT 3 TIMES IF THE DISTANCE IS MAXED OUT!
+                    Debug.Log("MAX TUG! HIT x3");
+                }
 
-            if (fishingRod.RTBLineSnapped || fishingRod.BTHLineSnapped)
-            {
-                tuggingTheLine = false;
-                break;
-            }
+                if (fishingRod.RTBLineSnapped || fishingRod.BTHLineSnapped)
+                {
+                    isFightingBack = false;
+                    //TESTING VARIABLE SCHOOLING BEHAVIOR: Return to default schooling behavior
+                    if (fish != null)
+                    {
+                        isSchooling = fish.isSchoolingOnSpawn;
+                    }
+                    break;
+                }
 
-            tuggingTheLine = false;
+                //TESTING VARIABLE SCHOOLING BEHAVIOR: Return to default schooling behavior
+                if (fish != null)
+                {
+                    isSchooling = fish.isSchoolingOnSpawn;
+                }
+                isFightingBack = false;
+            }
         }
     }
     IEnumerator EncroachingHunger()
@@ -788,6 +863,7 @@ public class BoidBehavior : MonoBehaviour
     IEnumerator EncroachingAge()
     {
         chatBubble.playEmote(ChatBubble.EmoteType.Old);
+        isElderly = true;
         isHungry = false;
 
         float elapsedTime = 0f;
@@ -798,7 +874,7 @@ public class BoidBehavior : MonoBehaviour
             yield return null;
         }
 
-        if (!isDead)
+        if (!isDead && !isHooked)
         {
             Die();
         }

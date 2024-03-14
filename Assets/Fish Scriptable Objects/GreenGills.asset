@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GreenGills
   m_EditorClassIdentifier: 
   mesh: {fileID: 919132149155446097, guid: d04b54b7eb72e8e49a71402a210a48d4, type: 3}
+  isLure: 0
   swimSpeed: 26.3
   swimHuntSpeed: 35
   swimEscapeSpeed: 33
@@ -21,8 +22,9 @@ MonoBehaviour:
   perceptionRadius: 9.18
   avoidanceRadius: 7
   avoidanceSeconds: 0.66
-  foodScore: 3
+  foodScore: 4
   foodScoreMax: 5
+  scoreDifferenceThreshold: 0
   minSizeMultiplier: 0.5
   maxSizeMultiplier: 1.5
   hungerWeight: 1
@@ -36,3 +38,4 @@ MonoBehaviour:
   maidenName: Green Gills
   favoriteSong: Ready to Fly - Masayoshi Takanaka
   luckyNumber: 48
+  isSchoolingOnSpawn: 1

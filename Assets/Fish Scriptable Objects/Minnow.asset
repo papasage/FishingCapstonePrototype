@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: Minnow
   m_EditorClassIdentifier: 
   mesh: {fileID: 919132149155446097, guid: bc60bc4de74414640ad6010d332fc543, type: 3}
+  isLure: 0
   swimSpeed: 26
   swimHuntSpeed: 35
+  swimEscapeSpeed: 33
   deviateRange: 10
   deviateChance: 8.15
   perceptionRadius: 55
   avoidanceRadius: 2.3
   avoidanceSeconds: 1.5
   foodScore: 0
+  foodScoreMax: 4
+  scoreDifferenceThreshold: 0
   minSizeMultiplier: 3
   maxSizeMultiplier: 3
   hungerWeight: 1
@@ -34,3 +38,4 @@ MonoBehaviour:
   maidenName: Minnow
   favoriteSong: doesnt listen to music
   luckyNumber: 238
+  isSchoolingOnSpawn: 1

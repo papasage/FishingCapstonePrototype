@@ -201,23 +201,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fish: {fileID: 0}
   allFish:
-  - {fileID: 11400000, guid: 4a98e0cf409eb1248806942de13656df, type: 2}
-  - {fileID: 11400000, guid: f5916ad80a32e7c4d86830b7f6e9914c, type: 2}
-  - {fileID: 11400000, guid: fa31c2242fcd75a4db33db2690057fae, type: 2}
   - {fileID: 11400000, guid: a67113ecfe360ea4ab9a8ee99d7edc79, type: 2}
+  - {fileID: 11400000, guid: 4a98e0cf409eb1248806942de13656df, type: 2}
+  - {fileID: 11400000, guid: fa31c2242fcd75a4db33db2690057fae, type: 2}
   - {fileID: 11400000, guid: 2953a31e5aac8fa4e97e2f2e39cda341, type: 2}
+  - {fileID: 11400000, guid: f5916ad80a32e7c4d86830b7f6e9914c, type: 2}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
   isHungry: 0
-  isSchooling: 1
+  isElderly: 0
   foundFood: 0
   isDead: 0
-  isDeviating: 0
   isBeingHunted: 0
-  isPanicking: 0
   isHooked: 0
   isHookSet: 0
+  isSchooling: 0
+  isDeviating: 0
+  isFightingBack: 0
+  isPanicking: 0
   mesh: {fileID: 0}
   isLure: 0
   swimSpeed: 0
@@ -230,18 +232,20 @@ MonoBehaviour:
   avoidanceSeconds: 0
   foodScore: 0
   foodScoreMax: 0
-  scoreDifferenceThreshold: 1.5
+  scoreDifferenceThreshold: 0
   sizeMultiplier: 0
   hungerWeight: 0
   hungryInSeconds: 0
   biteRange: 0
   decompositionTime: 0
+  target: {fileID: 0}
+  comboMeter: 1
   cohesionWeight: 0
   separationWeight: 0
   alignmentWeight: 0
   alignmentSpeed: 0
-  maidenName: 
-  favoriteSong: 
+  maidenName: null
+  favoriteSong: null
   luckyNumber: 0
 --- !u!1 &4751844855845049991
 GameObject:
