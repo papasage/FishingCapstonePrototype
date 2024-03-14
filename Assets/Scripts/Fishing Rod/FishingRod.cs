@@ -117,6 +117,7 @@ public class FishingRod : MonoBehaviour
             {
                 isReeled = true;
                 isCasted = false;
+                inputManager.canReel = false;
 
                 if (!hookHasFish)
                 {
@@ -185,6 +186,8 @@ public class FishingRod : MonoBehaviour
         isCasted = true;
         gamestate.Casted();
         bobberToHookString.maxDistance = hookWeight;
+
+        inputManager.canReel = true;
     }
     public void ReelInput()
     {

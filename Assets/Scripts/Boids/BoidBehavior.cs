@@ -474,6 +474,7 @@ public class BoidBehavior : MonoBehaviour
     }
     public void Unhook()
     {
+        StopCoroutine(TugTheLineCoroutine());
         isHooked = false;
         isHookSet = false;
         hook.GetComponent<FixedJoint>().connectedBody = null;
@@ -743,7 +744,7 @@ public class BoidBehavior : MonoBehaviour
     }
     IEnumerator TugTheLineCoroutine()
     {
-        while (!tuggingTheLine)
+        while (fishingRod != null && !tuggingTheLine)
         {
             tuggingTheLine = true;
             yield return new WaitForSeconds(0.1f);

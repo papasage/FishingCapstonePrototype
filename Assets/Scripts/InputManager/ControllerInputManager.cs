@@ -22,7 +22,7 @@ public class ControllerInputManager : MonoBehaviour
     //reel motion vaiables
     private Vector2 lastLeftStickValue = Vector2.zero;
     public bool isReeling;
-    private bool canReel;
+    public bool canReel;
 
 
     private void Awake()
@@ -44,7 +44,11 @@ public class ControllerInputManager : MonoBehaviour
         StartButton();
         SelectButton();
         
-        Reeling();
+        if (canReel)
+        {
+            Reeling();
+        }
+        
 
     }
 
