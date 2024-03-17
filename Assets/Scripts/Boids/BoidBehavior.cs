@@ -161,7 +161,7 @@ public class BoidBehavior : MonoBehaviour
 
                 if (neighbors == null || neighbors.Count <= 0 && !isHungry)
                 {
-                    ApplyDeviateBehavior();
+                    ApplyDeviateBehavior(deviateChance);
                 }
             }
 
@@ -361,11 +361,11 @@ public class BoidBehavior : MonoBehaviour
         Vector3 normalForward = transform.forward * currentSpeed;
         rb.velocity += normalForward * Time.deltaTime;
     }
-    void ApplyDeviateBehavior()
+    void ApplyDeviateBehavior(float chance)
     {
         int chanceRoll = Random.Range(1,100);
 
-        if (chanceRoll < deviateChance && !isDeviating)
+        if (chanceRoll < chance && !isDeviating)
         {
             StartCoroutine(DeviateCoroutine());
         }
@@ -475,31 +475,10 @@ public class BoidBehavior : MonoBehaviour
         if (fishingRod != null)
         {
             //move away from rod
-            //transform.LookAt(-fishingRod.transform.position);
-
-
-
-
-
-
-
-            //Tick time
-            //float timeCount = 0f;
-            //timeCount += Time.deltaTime;
-
-            //Calculate the target rotation
-            //Quaternion startRotation = transform.rotation;
-            //Vector3 rotationVector = fishingRod.transform.position - transform.position;
-            //Quaternion targetRotation = startRotation * Quaternion.Euler(rotationVector);
-
-            //Apply the rotation
-            //transform.rotation = Quaternion.Slerp(startRotation, targetRotation, timeCount / 0.5f);
-
-
-
-
-
-
+            transform.LookAt(-fishingRod.transform.position);
+            
+            //Deviate TIMES TEN!
+            ApplyDeviateBehavior(deviateChance * 10f);
 
             Debug.DrawLine(transform.position, transform.position + transform.forward * 2.0f, Color.green);
             Debug.DrawLine(transform.position, fishingRod.transform.position - transform.position * 2.0f, Color.magenta);
@@ -576,6 +555,7 @@ public class BoidBehavior : MonoBehaviour
         chatBubble.playEmote(ChatBubble.EmoteType.Happy);
 
         isHungry = false;
+        foundFood = false;
         StartCoroutine(EncroachingHunger());
         
         if (!boid.isLure && !boid.isHooked)
