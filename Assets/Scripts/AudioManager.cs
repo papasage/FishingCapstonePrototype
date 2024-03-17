@@ -38,6 +38,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("FishFX Clips")]
     [SerializeField] public AudioClip fishHooked;
+    [SerializeField] public AudioClip fishCombo;
     [SerializeField] public AudioClip fishOut;
     [SerializeField] public AudioClip fishFanfare;
 
@@ -101,6 +102,27 @@ public class AudioManager : MonoBehaviour
         GameObject soundGameObject = new GameObject(sound.name);
         AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
         audioSource.outputAudioMixerGroup = mixerSFX;
+        audioSource.PlayOneShot(sound);
+
+        // Store the sound in the dictionary
+        activeSounds[sound] = soundGameObject;
+
+        Destroy(soundGameObject, sound.length);
+    }
+    
+    void PlayPitchedSound(AudioClip sound, float pitch)
+    {
+        // Check if the sound is already playing
+        if (activeSounds.ContainsKey(sound) && activeSounds[sound] != null)
+        {
+            // Sound is already playing, reuse the existing GameObject
+            return;
+        }
+
+        GameObject soundGameObject = new GameObject(sound.name);
+        AudioSource audioSource = soundGameObject.AddComponent<AudioSource>();
+        audioSource.outputAudioMixerGroup = mixerSFX;
+        audioSource.pitch = pitch;
         audioSource.PlayOneShot(sound);
 
         // Store the sound in the dictionary
@@ -189,6 +211,10 @@ public class AudioManager : MonoBehaviour
     public void FishHooked()
     {
         PlaySound(fishHooked);
+    }
+    public void Combo(float pitch)
+    {
+        PlayPitchedSound(fishCombo, pitch);
     }
     public void FishOut()
     {

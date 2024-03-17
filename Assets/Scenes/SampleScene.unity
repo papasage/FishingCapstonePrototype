@@ -58130,6 +58130,7 @@ MonoBehaviour:
   rodBobberSplash: {fileID: 8300000, guid: 929db88215de2ad42aed88760c7d2d1a, type: 3}
   rodEquip: {fileID: 8300000, guid: 1b8b78ff8e708334fa4ed743a19added, type: 3}
   fishHooked: {fileID: 8300000, guid: 5674502f442182e4298a4845b94e59a4, type: 3}
+  fishCombo: {fileID: 8300000, guid: 052ff72f0a7b81544870f12b0b51ce62, type: 3}
   fishOut: {fileID: 8300000, guid: cefde9db769282d4496a486303a4326b, type: 3}
   fishFanfare: {fileID: 8300000, guid: 3ca9572a447370f43964b8a9086e9368, type: 3}
   waterRunningAmbient: {fileID: 8300000, guid: a362945504d879d4aac453f4c96ef033, type: 3}

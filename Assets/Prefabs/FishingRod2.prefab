@@ -875,7 +875,7 @@ Transform:
   m_GameObject: {fileID: 2605634088317491330}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.5881, y: 0.2811, z: 0.2749}
+  m_LocalPosition: {x: 0.589, y: 0.223, z: 0.215}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1222,7 +1222,7 @@ GameObject:
   - component: {fileID: 1341510434084120553}
   - component: {fileID: 4553280548797264563}
   - component: {fileID: 844491048448310675}
-  - component: {fileID: 8529713054470144409}
+  - component: {fileID: 8299117707025167364}
   m_Layer: 0
   m_Name: Hook
   m_TagString: Untagged
@@ -1238,14 +1238,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4367431634049567263}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.008802043, y: -0.008649743, z: -0.008649744, w: 0.99988645}
+  m_LocalRotation: {x: -0.009583712, y: 0.08646474, z: -0.007777567, w: 0.9961785}
   m_LocalPosition: {x: 0.585, y: 0.319, z: 0.404}
   m_LocalScale: {x: 0.22743052, y: 0.22743052, z: 0.22743052}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2781019559064128122}
   m_Father: {fileID: 8058294146715227998}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -1.017, y: 9.93, z: -0.983}
 --- !u!33 &409137722896247503
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1344,7 +1344,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!153 &8529713054470144409
+--- !u!153 &8299117707025167364
 ConfigurableJoint:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1353,18 +1353,18 @@ ConfigurableJoint:
   m_GameObject: {fileID: 4367431634049567263}
   m_ConnectedBody: {fileID: 7828862538939474974}
   m_ConnectedArticulationBody: {fileID: 0}
-  m_Anchor: {x: 0, y: 0.49999237, z: 0}
-  m_Axis: {x: 1, y: 0, z: 0}
+  m_Anchor: {x: 0, y: 0, z: 0}
+  m_Axis: {x: 0, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0, y: 0, z: 0}
+  m_ConnectedAnchor: {x: -0.0030004978, y: 0.09499946, z: 0.15699963}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
   m_YMotion: 0
   m_ZMotion: 0
-  m_AngularXMotion: 0
-  m_AngularYMotion: 0
-  m_AngularZMotion: 0
+  m_AngularXMotion: 2
+  m_AngularYMotion: 2
+  m_AngularZMotion: 2
   m_LinearLimitSpring:
     spring: 0
     damper: 0
@@ -1457,7 +1457,7 @@ GameObject:
   - component: {fileID: 8058294146715227998}
   - component: {fileID: 3261997324538396199}
   m_Layer: 0
-  m_Name: FishingRod
+  m_Name: FishingRod2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
