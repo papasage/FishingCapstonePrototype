@@ -213,7 +213,7 @@ public class BoidBehavior : MonoBehaviour
     }
     #endregion
     ////////////////////////////////////////////////////////////////////
-    //METHODS
+    // INITIALIZING METHODS
     ////////////////////////////////////////////////////////////////////
     void SelectBoid(int number)
     {
@@ -327,6 +327,10 @@ public class BoidBehavior : MonoBehaviour
         }
 
     }
+    void SetSize(float size)
+    {
+        currentMesh.transform.localScale = new Vector3(size, size, size);
+    }
     void GetAllBoids()
     {    
         boids = new List<GameObject>(GameObject.FindObjectsOfType<BoidBehavior>().Select(boid => boid.gameObject));
@@ -341,21 +345,9 @@ public class BoidBehavior : MonoBehaviour
         //initialize the list of all boids in the pond
         GetAllBoids();
     }
-    void Die()
-    {
-        if (isLure)
-        {
-            Destroy(this.gameObject);
-        }
-
-        fish = null;
-        isDead = true;
-        onDeath(); //Call out the death event
-        chatBubble.playEmote(ChatBubble.EmoteType.Dead);
-        BecomeBoid();
-        GetAllBoids();
-        StartCoroutine(Decompose());
-    }
+    ////////////////////////////////////////////////////////////////////
+    // BEHAVIOR METHODS
+    ////////////////////////////////////////////////////////////////////
     void ApplySwimBehavior()
     {
         Vector3 normalForward = transform.forward * currentSpeed;
@@ -413,9 +405,6 @@ public class BoidBehavior : MonoBehaviour
         rb.velocity += finalSteering * Time.deltaTime;
 
     }
-
-    //I WANT TO STOP SCANNING NEIGHBORS WHEN I FIND FOOD
-
     void ApplyHuntingBehavior()
     {
         if (target != null)
@@ -494,6 +483,9 @@ public class BoidBehavior : MonoBehaviour
             }
         }
     }
+    ////////////////////////////////////////////////////////////////////
+    // FISHING ROD METHODS
+    ////////////////////////////////////////////////////////////////////
     void SetTheHook()
     {
         if (!isLure)
@@ -510,7 +502,6 @@ public class BoidBehavior : MonoBehaviour
         hook.angularXMotion = ConfigurableJointMotion.Free;
         hook.angularYMotion = ConfigurableJointMotion.Free;
         hook.angularZMotion = ConfigurableJointMotion.Free;
-
 
         fishingRod = GameObject.Find("FishingRod").GetComponent<FishingRod>();
         fishingRod.hookHasFish = true;
@@ -550,6 +541,9 @@ public class BoidBehavior : MonoBehaviour
         fishingRod.hookHasFish = false;
         Destroy(this.gameObject);
     }
+    ////////////////////////////////////////////////////////////////////
+    // VERB METHODS
+    ////////////////////////////////////////////////////////////////////
     void Eat(BoidBehavior boid)
     {
         chatBubble.playEmote(ChatBubble.EmoteType.Happy);
@@ -583,10 +577,24 @@ public class BoidBehavior : MonoBehaviour
             StartCoroutine(EncroachingAge());
         }
     }
-    void SetSize(float size)
+    void Die()
     {
-        currentMesh.transform.localScale = new Vector3(size, size, size);
+        if (isLure)
+        {
+            Destroy(this.gameObject);
+        }
+
+        fish = null;
+        isDead = true;
+        onDeath(); //Call out the death event
+        chatBubble.playEmote(ChatBubble.EmoteType.Dead);
+        BecomeBoid();
+        GetAllBoids();
+        StartCoroutine(Decompose());
     }
+    ////////////////////////////////////////////////////////////////////
+    // PERCEPTION METHODS
+    ////////////////////////////////////////////////////////////////////
     List<GameObject> GetNeighborsWithinPerceptionRange()
     {
         //Refresh the neighbors List
@@ -611,14 +619,56 @@ public class BoidBehavior : MonoBehaviour
                 {
                     neighbors.Add(otherBoid);
                 }
+
+                //Here is where we could apply the logic to get hungry when we find the lure/isHooked
+
             }
-
-
-
         }
 
         //Once the loop has been made for all of the otherBoids, then return the compiled list
         return neighbors;
+    }
+    GameObject DetectFood(List<GameObject> neighbors)
+    {
+        //Fill the neighbor list using this GetNeighbors method
+        //List<GameObject> neighbors = GetNeighborsWithinPerceptionRange();
+
+        if (neighbors.Count == 0)
+        {
+            foundFood = false;
+            return null;
+        }
+
+        GameObject target = null;
+
+        foreach (GameObject neighbor in neighbors)
+        {
+            if (neighbor.GetComponent<BoidBehavior>().isLure || neighbor.GetComponent<BoidBehavior>().isHooked)
+            {
+                Debug.Log("A Level " + foodScore + " " + maidenName + " FISH SAW BAIT");
+
+                if (neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
+                {
+                    Debug.Log("FISH WANTS BAIT");
+                    foundFood = true;
+                    target = neighbor;
+                    Debug.DrawLine(transform.position, target.transform.position, Color.red);
+                    break;
+                }
+
+            }
+            //Check if the food score is lower than yours, but not below zero (dead)
+            if (neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
+            {
+                foundFood = true;
+                target = neighbor;
+                Debug.DrawLine(transform.position, target.transform.position, Color.red);
+                break;
+            }
+            else foundFood = false;
+        }
+
+        return target;
     }
     Vector3 CalculateCohesion(List<GameObject> neighbors)
     {
@@ -707,48 +757,7 @@ public class BoidBehavior : MonoBehaviour
         return (averageDirection - transform.forward).normalized;
         //return averageDirection.normalized;
     }
-    GameObject DetectFood(List<GameObject> neighbors)
-    {
-        //Fill the neighbor list using this GetNeighbors method
-        //List<GameObject> neighbors = GetNeighborsWithinPerceptionRange();
-
-        if (neighbors.Count == 0)
-        {
-            foundFood = false;
-            return null;
-        }
-
-        GameObject target = null;
-
-        foreach (GameObject neighbor in neighbors)
-        {
-            if (neighbor.GetComponent<BoidBehavior>().isLure || neighbor.GetComponent<BoidBehavior>().isHooked)
-            {
-                Debug.Log("A Level " + foodScore + " " + maidenName + " FISH SAW BAIT");
-
-                if(neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
-                {
-                    Debug.Log("FISH WANTS BAIT");
-                    foundFood = true;
-                    target = neighbor;
-                    Debug.DrawLine(transform.position, target.transform.position, Color.red);
-                    break;
-                }
-
-            }
-            //Check if the food score is lower than yours, but not below zero (dead)
-            if (neighbor.GetComponent<BoidBehavior>().foodScore < (foodScore - scoreDifferenceThreshold) && neighbor.GetComponent<BoidBehavior>().foodScore > 0)
-            {
-                foundFood = true;
-                target = neighbor;
-                Debug.DrawLine(transform.position, target.transform.position, Color.red);
-                break;
-            }
-            else foundFood = false;
-        }
-
-        return target;
-    }
+    
 
     /*
     void SaveFish()
