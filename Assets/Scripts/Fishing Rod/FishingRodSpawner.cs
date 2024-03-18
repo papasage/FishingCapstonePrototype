@@ -32,7 +32,7 @@ public class FishingRodSpawner : MonoBehaviour
         }
         currentRod = Instantiate(FishingRod, transform.position, Quaternion.identity);
         currentRod.name = "FishingRod";
-        currentRod.GetComponent<FishingRod>().InitializeRod();
+        //currentRod.GetComponent<FishingRod>().InitializeRod();
         
         //tell the UI that it is okay to look for references to the rod
         ui.rodIsEquipped = true;

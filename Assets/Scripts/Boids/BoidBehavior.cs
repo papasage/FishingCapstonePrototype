@@ -30,6 +30,7 @@ public class BoidBehavior : MonoBehaviour
     private Vector3 predatorDistance;
     private ConfigurableJoint hook;
     private FishingRod fishingRod;
+    private int minnowCount = 0;
 
     //I DONT USE THESE ANYMORE. CAN WE DELETE?
     //private TMP_Text label;              // Fish name tag
@@ -102,15 +103,30 @@ public class BoidBehavior : MonoBehaviour
     #region Runtime
     void Awake()
     {
+        //initialize the list of all boids in the pond
+        GetAllBoids();
         //Choose a fish from the array of scriptable object fish if you dont already have one assigned
         if (fish == null)
         {
-            SelectBoid(Random.Range(0, allFish.Length));
+            if (!isLure)
+            {
+                if (minnowCount >= 10)
+                {
+                    //Debug.Log("Minnow Count Maxed: Minnow Blocked");
+                    SelectBoid(Random.Range(1, allFish.Length));
+                }
+                else
+                {
+                    //Debug.Log("Minnow Count Not Reached: Minnow Unlocked");
+                    SelectBoid(Random.Range(0, allFish.Length));
+                }
+            }
         }
+
         //initialize variables based on Scriptable Object input
         BecomeBoid();
-        //initialize the list of all boids in the pond
-        GetAllBoids();
+        
+        
         //Start the hunger clock
         
         if (!isLure && maidenName != "Minnow")
@@ -122,7 +138,7 @@ public class BoidBehavior : MonoBehaviour
 
     private void OnEnable()
     {
-        FishSpawner.onSpawn += GetAllBoids;
+        //FishSpawner.onSpawn += GetAllBoids;
         BoidBehavior.onDeath += GetAllBoids;
     }
     
@@ -215,10 +231,12 @@ public class BoidBehavior : MonoBehaviour
     ////////////////////////////////////////////////////////////////////
     // INITIALIZING METHODS
     ////////////////////////////////////////////////////////////////////
-    void SelectBoid(int number)
+    void SelectBoid(int fishNumber)
     {
         isDead = false;
-        fish = allFish[number];
+
+        //Spawn the updatedFishNumber
+        fish = allFish[fishNumber];
     }
     void BecomeBoid()
     {
@@ -334,7 +352,17 @@ public class BoidBehavior : MonoBehaviour
     void GetAllBoids()
     {    
         boids = new List<BoidBehavior>(GameObject.FindObjectsOfType<BoidBehavior>());
-        //Debug.Log("Boids Initialized! Found Boids: " + boids.Count);
+
+        minnowCount = 0;
+
+        foreach (BoidBehavior otherBoid in boids)
+        {
+            if (otherBoid.maidenName == "Minnow")
+            {
+                minnowCount++;
+            }
+        }
+        //Debug.Log("Boids Initialized! Found Boids: " + boids.Count + "Found Minnows: " + minnowCount);
     }
     void ShuffleBoid()
     {

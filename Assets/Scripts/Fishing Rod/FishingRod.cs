@@ -15,8 +15,12 @@ public class FishingRod : MonoBehaviour
     LineRenderer lineRenderer;
     GameObject hook;
     GameObject firePoint;
-    public GameObject hookedFish;
     ControllerInputManager inputManager;
+
+    [Header("Hook")]
+    public Fish lure;
+    private Fish lureShell;
+    public GameObject hookedFish;
 
     [Header("Casting")]
     public float launchForce = 100f;
@@ -50,12 +54,11 @@ public class FishingRod : MonoBehaviour
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         InitializeRod();
         rodSpawner = GameObject.Find("FishingRodSpawner").GetComponent<FishingRodSpawner>();
         inputManager = GameObject.Find("PlayerManager").GetComponent<ControllerInputManager>();
-
     }
 
     private void OnEnable()
@@ -151,6 +154,8 @@ public class FishingRod : MonoBehaviour
         // init hook
         hook = GameObject.Find("Hook");
         hookArt = GameObject.Find("HookArt");
+        lureShell = GameObject.Find("Bait").GetComponent<BoidBehavior>().fish;
+        lureShell = lure;
 
         // init casting launch point
         firePoint = GameObject.Find("FirePoint");
@@ -167,7 +172,7 @@ public class FishingRod : MonoBehaviour
         bobberToHookLineHealth = lineMaxHealth;
 
 
-    Debug.Log("Rod Initialized");
+        Debug.Log("Rod Initialized");
     }
     void Cast(float strength)
     {

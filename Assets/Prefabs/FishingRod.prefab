@@ -924,9 +924,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eefafdea512d71b4bbfa79548bf502c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fish: {fileID: 0}
-  allFish:
-  - {fileID: 11400000, guid: e5c88941bdb484f48b82a4f39b0a4764, type: 2}
+  fish: {fileID: 11400000, guid: e5c88941bdb484f48b82a4f39b0a4764, type: 2}
+  allFish: []
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1494,6 +1493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f7a60544ed52b545895c766ebc82580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lure: {fileID: 11400000, guid: e5c88941bdb484f48b82a4f39b0a4764, type: 2}
   hookedFish: {fileID: 0}
   launchForce: 100
   launchDirection: {x: 1, y: 0, z: 1}
