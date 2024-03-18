@@ -15451,7 +15451,7 @@ GameObject:
   m_Component:
   - component: {fileID: 519862765}
   m_Layer: 5
-  m_Name: Reset Prompt
+  m_Name: Equip Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35442,7 +35442,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1234839931}
   m_Layer: 5
-  m_Name: Reeling Prompt
+  m_Name: Reel Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51620,6 +51620,10 @@ MonoBehaviour:
   colorHealthDepleated: {r: 1, g: 0, b: 0, a: 1}
   debugMode: 0
   debugMenu: {fileID: 2105600940}
+  UI_EquipPrompt: {fileID: 519862764}
+  UI_CastPrompt: {fileID: 1366038329}
+  UI_ReelPrompt: {fileID: 1234839930}
+  UI_CaughtPrompt: {fileID: 1433842449}
 --- !u!4 &1792789829
 Transform:
   m_ObjectHideFlags: 0

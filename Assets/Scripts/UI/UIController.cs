@@ -51,6 +51,12 @@ public class UIController : MonoBehaviour
     public bool debugMode = false;
     [SerializeField] GameObject debugMenu;
 
+    [Header("State Prompts")]
+    [SerializeField] GameObject UI_EquipPrompt;
+    [SerializeField] GameObject UI_CastPrompt;
+    [SerializeField] GameObject UI_ReelPrompt;
+    [SerializeField] GameObject UI_CaughtPrompt;
+
 
     private void OnEnable()
     {
@@ -69,7 +75,7 @@ public class UIController : MonoBehaviour
         //handle progress bar
         GameCastedState.onStateCasted += ShowReelProgressBar;
         GameLandingState.onStateLanding += HideReelProgressBar;
-        GameIdleState.onStateIdle += HideReelProgressBar;
+        //GameIdleState.onStateIdle += HideReelProgressBar;
     }
 
     private void Awake()
@@ -133,10 +139,22 @@ public class UIController : MonoBehaviour
         UIBoidCountText.text = UICount.ToString();
     }
 
-    void UIIdle()
+    public void UIIdle()
     {
         UIStateSprite.sprite = _stateIdle;
         UIStateText.text = "Idle";
+
+        HideReelProgressBar();
+    }
+    public void UIIdleEquipPrompt()
+    {
+        UI_EquipPrompt.SetActive(true);
+        UI_CastPrompt.SetActive(false);
+    }
+    public void UIIdleCastPrompt()
+    {
+        UI_EquipPrompt.SetActive(false);
+        UI_CastPrompt.SetActive(true);
     }
     void UICasting()
     {

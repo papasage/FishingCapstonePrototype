@@ -100,28 +100,13 @@ public class GameStateMachine : StateMachine
             ChangeState(ScoringState);
         }
 
-        if (resetReady)
-        {
-            if(Input.GetButtonDown("X"))
-            {
-                rodSpawner.SpawnRod();
-                resetReady = false;
-                UI_EquipPrompt.SetActive(false);
-                UI_CastPrompt.SetActive(true);
-            }
-        }
     }
 
     public void Idle()
     {
         ChangeState(IdleState);
 
-        AudioManager.instance.AmbienceDock();
-        AudioManager.instance.MusicPeaceful();
-
-        resetReady = true;
-
-        UI_EquipPrompt.SetActive(true);
+        //UI_EquipPrompt.SetActive(true);
 
         if (trophy != null)
         {
