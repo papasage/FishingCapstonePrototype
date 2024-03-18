@@ -20,7 +20,6 @@ public class CameraManager : MonoBehaviour
     public Transform waterLevel;
     public bool isUnderWater;
 
-
     [Header("Camera Position Transforms")]
     [SerializeField] Transform idleCameraPosition;
     [SerializeField] Transform castingCameraPosition;
@@ -64,6 +63,7 @@ public class CameraManager : MonoBehaviour
 
     void LerpToPosition(Transform targetPosition)
     {
+        StopCoroutine(LerpCoroutine(targetPosition.position, targetPosition.rotation));
         StartCoroutine(LerpCoroutine(targetPosition.position, targetPosition.rotation));
     }
 

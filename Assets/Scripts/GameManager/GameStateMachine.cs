@@ -58,7 +58,7 @@ public class GameStateMachine : StateMachine
     }
 
 
-    void Update()
+    new void Update()
     {
         if (Input.GetKeyDown("1"))
         {
@@ -198,7 +198,7 @@ public class GameStateMachine : StateMachine
 
     IEnumerator FightingCoroutine()
     {
-        float elapsedTime = 0f;
+        
 
         if (trophy != null)
         {
@@ -217,6 +217,8 @@ public class GameStateMachine : StateMachine
         GameObject.Find("CaughtData_Song").GetComponent<TMP_Text>().text = caughtFish.favoriteSong;
 
         //Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
+
+        float elapsedTime = 0f;
 
         while (elapsedTime < 5f)
         {
