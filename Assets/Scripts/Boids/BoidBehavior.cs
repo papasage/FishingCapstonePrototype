@@ -305,7 +305,7 @@ public class BoidBehavior : MonoBehaviour
             luckyNumber = fish.luckyNumber;
 
             //Instantiate the mesh and store the instance for later deleting.
-            currentMesh = Instantiate(mesh, transform.position, transform.rotation, transform);
+            currentMesh = Instantiate(mesh,transform);
             SetSize(sizeMultiplier);
 
             //Fill in the name tag on the prefab
