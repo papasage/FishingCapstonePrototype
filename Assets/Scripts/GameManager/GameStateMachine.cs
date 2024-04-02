@@ -10,12 +10,14 @@ public class GameStateMachine : StateMachine
     BoidBehavior caughtFish;        //the fish data that was caught
     GameObject caughtFishDisplay;   //the object that parents the trophy
     GameObject trophy;              //the instance of the caughtFish that is displayed
-    public bool resetReady = false;
+    public bool rodSpawnerReady = false;
+    public bool playerCaughtInputReady = false;
 
     [SerializeField] GameObject UI_EquipPrompt;
     [SerializeField] GameObject UI_CastPrompt;
     [SerializeField] GameObject UI_ReelPrompt;
     [SerializeField] GameObject UI_CaughtPrompt;
+    [SerializeField] GameObject UI_CaughtCombo;
 
     //GameStates Scripts made with the IState interface
     //Assets -> Scripts -> GameManager -> States
@@ -60,56 +62,44 @@ public class GameStateMachine : StateMachine
 
     new void Update()
     {
-        if (Input.GetKeyDown("1"))
+
+        if (playerCaughtInputReady)
         {
-            ChangeState(IdleState);
+            if (Input.GetButtonDown("A"))
+            {
+                //CLEAR OUT THE CATCH WINDOW
+                caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
+                UI_CaughtCombo.SetActive(false);
+                UI_CaughtPrompt.SetActive(false);
+                playerCaughtInputReady = false;
+                rodSpawnerReady = true;
+                Idle();
+            }
+
+            if (Input.GetButtonDown("B"))
+            {
+                //CLEAR OUT THE CATCH WINDOW
+                caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
+                UI_CaughtCombo.SetActive(false);
+                UI_CaughtPrompt.SetActive(false);
+                playerCaughtInputReady = false;
+                rodSpawnerReady = true;
+                Idle();
+            }
         }
 
-        if (Input.GetKeyDown("2"))
-        {
-            ChangeState(CastingState);
-        }
-
-        if (Input.GetKeyDown("3"))
-        {
-            ChangeState(CastedState);
-        }
-
-        if (Input.GetKeyDown("4"))
-        {
-            ChangeState(BiteState);
-        }
-
-        if (Input.GetKeyDown("5"))
-        {
-            ChangeState(ReelingState);
-        }
-
-        if (Input.GetKeyDown("6"))
-        {
-            ChangeState(LandingState);
-        }
-
-        if (Input.GetKeyDown("7"))
-        {
-            ChangeState(FightingState);
-        }
-
-        if (Input.GetKeyDown("8"))
-        {
-            ChangeState(ScoringState);
-        }
-
-        if (resetReady)
+        if (rodSpawnerReady)
         {
             if(Input.GetButtonDown("X"))
             {
+                //SPAWN ROD
                 rodSpawner.SpawnRod();
-                resetReady = false;
+                rodSpawnerReady = false;
                 UI_EquipPrompt.SetActive(false);
                 UI_CastPrompt.SetActive(true);
             }
         }
+        
     }
 
     public void Idle()
@@ -119,7 +109,7 @@ public class GameStateMachine : StateMachine
         AudioManager.instance.AmbienceDock();
         AudioManager.instance.MusicPeaceful();
 
-        resetReady = true;
+        rodSpawnerReady = true;
 
         UI_EquipPrompt.SetActive(true);
 
@@ -143,7 +133,7 @@ public class GameStateMachine : StateMachine
     public void Bite()
     {
         ChangeState(BiteState);
-        AudioManager.instance.MusicAction();
+        //AudioManager.instance.MusicAction();
         StartCoroutine(BiteCoroutine());
     }
     public void Reeling()
@@ -158,10 +148,37 @@ public class GameStateMachine : StateMachine
         StartCoroutine(LandingCoroutine());
         
     }
-    public void Fighting()
+    public void FishCaught()
     {
         ChangeState(FightingState);
-        StartCoroutine(FightingCoroutine());
+
+        if (trophy != null)
+        {
+            Destroy(trophy);
+        }
+        trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
+        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
+
+        // AudioManager.instance.MusicFishCaught();
+
+        UI_CaughtPrompt.SetActive(true);
+       
+        GameObject.Find("CaughtData_Breed").GetComponent<TMP_Text>().text = caughtFish.maidenName;
+        GameObject.Find("CaughtData_Size").GetComponent<TMP_Text>().text = caughtFish.sizeMultiplier.ToString();
+        GameObject.Find("CaughtData_Level").GetComponent<TMP_Text>().text = caughtFish.foodScore.ToString();
+
+        if (caughtFish.comboMeter > 1)
+        {
+            UI_CaughtCombo.SetActive(true);
+            //COMBO DATA
+            GameObject.Find("CaughtData_Combo").GetComponent<TMP_Text>().text = "x" + caughtFish.comboMeter.ToString();
+        }
+        else UI_CaughtCombo.SetActive(false);
+
+
+        playerCaughtInputReady = true;
+
+        //StartCoroutine(FightingCoroutine());
     }
     public void Scoring()
     {
@@ -193,13 +210,12 @@ public class GameStateMachine : StateMachine
             yield return null;
         }
 
-        Fighting();
+        FishCaught();
     }
 
     IEnumerator FightingCoroutine()
     {
         
-
         if (trophy != null)
         {
             Destroy(trophy);
@@ -207,15 +223,15 @@ public class GameStateMachine : StateMachine
         trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
         caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
 
-        AudioManager.instance.MusicFishCaught();
+       // AudioManager.instance.MusicFishCaught();
 
         UI_CaughtPrompt.SetActive(true);
         //GameObject.Find("CaughtData").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
-        GameObject.Find("CaughtData_Breed").GetComponent<TMP_Text>().text = caughtFish.maidenName + " Fish";
+        GameObject.Find("CaughtData_Breed").GetComponent<TMP_Text>().text = caughtFish.maidenName;
         GameObject.Find("CaughtData_Size").GetComponent<TMP_Text>().text = caughtFish.sizeMultiplier.ToString();
         GameObject.Find("CaughtData_Level").GetComponent<TMP_Text>().text = caughtFish.foodScore.ToString();
-        GameObject.Find("CaughtData_Song").GetComponent<TMP_Text>().text = caughtFish.favoriteSong;
-
+       
+        //GameObject.Find("CaughtData_Song").GetComponent<TMP_Text>().text = caughtFish.favoriteSong;
         //Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
 
         float elapsedTime = 0f;
@@ -227,7 +243,7 @@ public class GameStateMachine : StateMachine
         }
         caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
         UI_CaughtPrompt.SetActive(false);
-        resetReady = true;
+        rodSpawnerReady = true;
         Idle();
     }
 }

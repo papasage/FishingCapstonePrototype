@@ -129,7 +129,7 @@ public class BoidBehavior : MonoBehaviour
         
         //Start the hunger clock
         
-        if (!isLure && maidenName != "Minnow")
+        if (!isLure && maidenName != "Kavkiin Minnow")
         {
             StartCoroutine(EncroachingHunger());
         }
@@ -357,7 +357,7 @@ public class BoidBehavior : MonoBehaviour
 
         foreach (BoidBehavior otherBoid in boids)
         {
-            if (otherBoid.maidenName == "Minnow")
+            if (otherBoid.maidenName == "Kavkiin Minnow")
             {
                 minnowCount++;
             }
@@ -606,7 +606,7 @@ public class BoidBehavior : MonoBehaviour
         Debug.Log("Bait Spotted: Rolling For Appetite");
         int chanceRoll = Random.Range(1, 100);
 
-        if (chanceRoll < chance && maidenName != "Minnow")
+        if (chanceRoll < chance && maidenName != "Kavkiin Minnow")
         {
             Debug.Log("Roll Success: Now Hungry");
             isHungry = true;
@@ -907,7 +907,7 @@ public class BoidBehavior : MonoBehaviour
             yield return null;
         }
 
-        if (!isDead && maidenName != "Minnow" && !isHooked) 
+        if (!isDead && maidenName != "Kavkiin Minnow" && !isHooked) 
         {
             isHungry = true;
             chatBubble.playEmote(ChatBubble.EmoteType.Hungry);

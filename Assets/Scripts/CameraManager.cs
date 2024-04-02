@@ -87,6 +87,7 @@ public class CameraManager : MonoBehaviour
 
     void StateIsIdle()
     {
+        Debug.Log("Cam to Idle");
         LerpToPosition(idleCameraPosition);
     }
 

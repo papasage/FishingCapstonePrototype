@@ -124,7 +124,8 @@ public class FishingRod : MonoBehaviour
 
                 if (!hookHasFish)
                 {
-                        gamestate.resetReady = true;
+                        gamestate.rodSpawnerReady = true;
+                    Debug.Log("HOOK HAS NO FISH. GOIN IDLE");
                         gamestate.Idle();
                         //Destroy(this.gameObject);
                         rodSpawner.DespawnRod();
@@ -380,7 +381,7 @@ public class FishingRod : MonoBehaviour
 
         isReeled = true;
         isCasted = false;
-        gamestate.resetReady = true;
+        gamestate.rodSpawnerReady = true;
         gamestate.Idle();
 
         lineRenderer.positionCount = 0;
@@ -398,7 +399,7 @@ public class FishingRod : MonoBehaviour
 
         bobberToHookString.breakForce = 0;
 
-        AudioManager.instance.MusicFailure();
+        //AudioManager.instance.MusicFailure(); 
         AudioManager.instance.RodLineBreak();
 
         RumbleManager.instance.RumblePulse(0.8f, .9f, 0.5f);

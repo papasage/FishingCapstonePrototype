@@ -1496,7 +1496,7 @@ MonoBehaviour:
   lure: {fileID: 11400000, guid: e5c88941bdb484f48b82a4f39b0a4764, type: 2}
   hookedFish: {fileID: 0}
   launchForce: 100
-  launchDirection: {x: 1, y: 0, z: 1}
+  launchDirection: {x: 0, y: 0, z: 1}
   reelForce: 0.09
   rodToBobberString: {fileID: 0}
   bobberToHookString: {fileID: 0}

@@ -30,7 +30,7 @@ public class FishingRodSpawner : MonoBehaviour
         {
             DespawnRod();
         }
-        currentRod = Instantiate(FishingRod, transform.position, Quaternion.identity);
+        currentRod = Instantiate(FishingRod, transform.position, transform.rotation);
         currentRod.name = "FishingRod";
         //currentRod.GetComponent<FishingRod>().InitializeRod();
         
