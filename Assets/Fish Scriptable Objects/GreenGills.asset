@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
   m_Name: GreenGills
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: c240e30309abee84d9d5af20d8d2916e, type: 3}
+  mesh: {fileID: 919132149155446097, guid: 56044dc3b3e04d645a6b2962e4263584, type: 3}
   isLure: 0
   swimSpeed: 26.3
   swimHuntSpeed: 35
@@ -35,7 +35,7 @@ MonoBehaviour:
   separationWeight: 1.5
   alignmentWeight: 0.47
   alignmentSpeed: 0.82
-  maidenName: Green Gills
+  maidenName: Pharaxian Greengill
   favoriteSong: Ready to Fly - Masayoshi Takanaka
   luckyNumber: 48
   isSchoolingOnSpawn: 1

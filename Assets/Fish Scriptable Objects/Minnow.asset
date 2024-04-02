@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
   m_Name: Minnow
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: 39fec1d822c968d4d98bcd899713a86b, type: 3}
+  mesh: {fileID: 919132149155446097, guid: 6c04c8c8c77557f46bbde003b3887a56, type: 3}
   isLure: 0
   swimSpeed: 26
   swimHuntSpeed: 35
@@ -25,8 +25,8 @@ MonoBehaviour:
   foodScore: 0
   foodScoreMax: 4
   scoreDifferenceThreshold: 0
-  minSizeMultiplier: 0.4
-  maxSizeMultiplier: 0.5
+  minSizeMultiplier: 0.81
+  maxSizeMultiplier: 1.2
   hungerWeight: 1
   hungryInSeconds: 30
   biteRange: 2.5
@@ -35,7 +35,7 @@ MonoBehaviour:
   separationWeight: 0.03
   alignmentWeight: 0.38
   alignmentSpeed: 20
-  maidenName: Minnow
+  maidenName: Kavkiin Minnow
   favoriteSong: doesnt listen to music
   luckyNumber: 238
   isSchoolingOnSpawn: 1

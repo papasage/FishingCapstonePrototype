@@ -35,7 +35,7 @@ MonoBehaviour:
   separationWeight: 1.5
   alignmentWeight: 0.47
   alignmentSpeed: 0.82
-  maidenName: Pinkie
+  maidenName: Winged Chub
   favoriteSong: 'Nocturnes, Op. 9: No. 1 in B-Flat Minor - Chopin'
   luckyNumber: 4
   isSchoolingOnSpawn: 1

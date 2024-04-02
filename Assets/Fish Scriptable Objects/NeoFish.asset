@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
   m_Name: NeoFish
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: fc57c939520d0dd4f91299e194621eb0, type: 3}
+  mesh: {fileID: 919132149155446097, guid: 4c8c099b5ea55e54e8fa350548d80526, type: 3}
   isLure: 0
   swimSpeed: 26
   swimHuntSpeed: 35
@@ -35,7 +35,7 @@ MonoBehaviour:
   separationWeight: 0.18
   alignmentWeight: 0.38
   alignmentSpeed: 10.7
-  maidenName: Jack
+  maidenName: Fallen Herring
   favoriteSong: Can't Stop - Red Hot Chilli Peppers
   luckyNumber: 155
   isSchoolingOnSpawn: 1

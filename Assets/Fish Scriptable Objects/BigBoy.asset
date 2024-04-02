@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
   m_Name: BigBoy
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: 81c049faa2bd6d442a7a99dd3f022002, type: 3}
+  mesh: {fileID: 919132149155446097, guid: bee9a6f50b5dc9b459f3750a21eba567, type: 3}
   isLure: 0
   swimSpeed: 10
   swimHuntSpeed: 35
@@ -35,7 +35,7 @@ MonoBehaviour:
   separationWeight: 1.5
   alignmentWeight: 0.47
   alignmentSpeed: 0.4
-  maidenName: Big Boy
+  maidenName: Chruulian Cat Koi
   favoriteSong: Great Gig in the Sky - Pink Floyd
   luckyNumber: 2
   isSchoolingOnSpawn: 0
