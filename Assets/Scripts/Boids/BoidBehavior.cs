@@ -542,6 +542,7 @@ public class BoidBehavior : MonoBehaviour
         StopCoroutine(EncroachingAge());
         isElderly = false;
         StartCoroutine(EncroachingHunger());
+        comboMeter = 1;
 
     }
     void Land(BoidBehavior caught)
