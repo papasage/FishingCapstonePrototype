@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class GameStateMachine : StateMachine
@@ -18,6 +19,7 @@ public class GameStateMachine : StateMachine
     [SerializeField] GameObject UI_ReelPrompt;
     [SerializeField] GameObject UI_CaughtPrompt;
     [SerializeField] GameObject UI_CaughtCombo;
+    [SerializeField] GameObject UI_ReelBarFishIcon;
 
     //GameStates Scripts made with the IState interface
     //Assets -> Scripts -> GameManager -> States
@@ -49,6 +51,7 @@ public class GameStateMachine : StateMachine
         UI_CastPrompt.SetActive(false);
         UI_ReelPrompt.SetActive(false);
         UI_CaughtPrompt.SetActive(false);
+        UI_ReelBarFishIcon.SetActive(false);
 
 
     }
@@ -134,7 +137,10 @@ public class GameStateMachine : StateMachine
     {
         ChangeState(BiteState);
         //AudioManager.instance.MusicAction();
-        StartCoroutine(BiteCoroutine());
+
+        UI_ReelBarFishIcon.SetActive(true);
+        ChangeState(ReelingState);
+        //StartCoroutine(BiteCoroutine());
     }
     public void Reeling()
     {
@@ -144,6 +150,7 @@ public class GameStateMachine : StateMachine
     public void Landing(BoidBehavior caught)
     {
         ChangeState(LandingState);
+        UI_ReelBarFishIcon.SetActive(false);
         caughtFish = caught;
         StartCoroutine(LandingCoroutine());
         
@@ -166,6 +173,7 @@ public class GameStateMachine : StateMachine
         GameObject.Find("CaughtData_Breed").GetComponent<TMP_Text>().text = caughtFish.maidenName;
         GameObject.Find("CaughtData_Size").GetComponent<TMP_Text>().text = caughtFish.sizeMultiplier.ToString();
         GameObject.Find("CaughtData_Level").GetComponent<TMP_Text>().text = caughtFish.foodScore.ToString();
+        GameObject.Find("CaughtData_Sketch").GetComponent<Image>().sprite = caughtFish.sketch;
 
         if (caughtFish.comboMeter > 1)
         {

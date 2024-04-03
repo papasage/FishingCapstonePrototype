@@ -40,6 +40,7 @@ public class Fish : ScriptableObject
     public string maidenName;
     public string favoriteSong;
     public int luckyNumber;
+    public Sprite sketch;                            // This is the Image of the fish
 
     [Header("Starting Modifier")]
     public bool isSchoolingOnSpawn;

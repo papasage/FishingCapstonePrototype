@@ -96,6 +96,7 @@ public class BoidBehavior : MonoBehaviour
     public string maidenName;           // UNUSED
     public string favoriteSong;         // UNUSED
     public int luckyNumber;             // UNUSED
+    public Sprite sketch;               // This is the Image of the fish
 
     ////////////////////////////////////////////////////////////////////
     //RUNTIME
@@ -303,6 +304,7 @@ public class BoidBehavior : MonoBehaviour
             maidenName = fish.maidenName;
             favoriteSong = fish.favoriteSong;
             luckyNumber = fish.luckyNumber;
+            sketch = fish.sketch;
 
             //Instantiate the mesh and store the instance for later deleting.
             currentMesh = Instantiate(mesh,transform);
