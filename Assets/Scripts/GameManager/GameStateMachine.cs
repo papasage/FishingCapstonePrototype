@@ -68,26 +68,16 @@ public class GameStateMachine : StateMachine
 
         if (playerCaughtInputReady)
         {
-            if (Input.GetButtonDown("A"))
+            if (Input.GetButtonDown("A")) // KEEP
             {
                 //CLEAR OUT THE CATCH WINDOW
-                caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
-                UI_CaughtCombo.SetActive(false);
-                UI_CaughtPrompt.SetActive(false);
-                playerCaughtInputReady = false;
-                rodSpawnerReady = true;
-                Idle();
+                StartCoroutine(FishKeepCoroutine());
             }
 
-            if (Input.GetButtonDown("B"))
+            if (Input.GetButtonDown("B")) // SELL
             {
                 //CLEAR OUT THE CATCH WINDOW
-                caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
-                UI_CaughtCombo.SetActive(false);
-                UI_CaughtPrompt.SetActive(false);
-                playerCaughtInputReady = false;
-                rodSpawnerReady = true;
-                Idle();
+                StartCoroutine(FishSellCoroutine());
             }
         }
 
@@ -164,7 +154,7 @@ public class GameStateMachine : StateMachine
             Destroy(trophy);
         }
         trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
-        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
+        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().RevealFishModelCoroutine());
 
         // AudioManager.instance.MusicFishCaught();
 
@@ -229,9 +219,9 @@ public class GameStateMachine : StateMachine
             Destroy(trophy);
         }
         trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
-        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = true;
+        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().RevealFishModelCoroutine());
 
-       // AudioManager.instance.MusicFishCaught();
+        // AudioManager.instance.MusicFishCaught();
 
         UI_CaughtPrompt.SetActive(true);
         //GameObject.Find("CaughtData").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
@@ -249,8 +239,54 @@ public class GameStateMachine : StateMachine
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-        caughtFishDisplay.GetComponent<RotateObject>().rotateEnabled = false;
+        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().HideFishModelCoroutine());
         UI_CaughtPrompt.SetActive(false);
+        rodSpawnerReady = true;
+        Idle();
+    }
+    
+    IEnumerator FishKeepCoroutine()
+    {
+        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().HideFishModelCoroutine());
+
+
+        //THIS IS WHERE WE APPLY THE LOGIC FOR SAVING THE FISH
+
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 1f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        UI_CaughtCombo.SetActive(false);
+        UI_CaughtPrompt.SetActive(false);
+        playerCaughtInputReady = false;
+        rodSpawnerReady = true;
+        Idle();
+    }
+    
+    IEnumerator FishSellCoroutine()
+    {
+        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().HideFishModelCoroutine());
+
+
+        //THIS IS WHERE WE APPLY THE LOGIC FOR SELLING THE FISH
+
+
+        float elapsedTime = 0f;
+
+        while (elapsedTime < 1f)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        UI_CaughtCombo.SetActive(false);
+        UI_CaughtPrompt.SetActive(false);
+        playerCaughtInputReady = false;
         rodSpawnerReady = true;
         Idle();
     }
