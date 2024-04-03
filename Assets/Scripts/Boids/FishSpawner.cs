@@ -12,6 +12,7 @@ public class FishSpawner : MonoBehaviour
     public static OnSpawn onSpawn;
     private List<GameObject> boids;
     private int BoidCount;
+    public int pondBoidMax = 64;
 
 
     private void Start()
@@ -58,7 +59,7 @@ public class FishSpawner : MonoBehaviour
         CheckBoidCount();
         
 
-        if (BoidCount < 60)
+        if (BoidCount < pondBoidMax)
         {
             Debug.Log("BOID RESPAWN");
             SpawnFish();
