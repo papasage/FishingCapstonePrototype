@@ -249,9 +249,8 @@ public class GameStateMachine : StateMachine
     {
         StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().HideFishModelCoroutine());
 
-
         //THIS IS WHERE WE APPLY THE LOGIC FOR SAVING THE FISH
-
+        FishDataManager.instance.SaveFishData(caughtFish);
 
         float elapsedTime = 0f;
 
