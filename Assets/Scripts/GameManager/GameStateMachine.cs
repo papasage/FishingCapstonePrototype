@@ -183,21 +183,6 @@ public class GameStateMachine : StateMachine
         ChangeState(ScoringState);
         
     }
-
-    IEnumerator BiteCoroutine()
-    {
-        float elapsedTime = 0f;
-
-        UI_ReelPrompt.SetActive(true);
-
-        while (elapsedTime < 4f)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        Reeling();
-    }
     IEnumerator LandingCoroutine()
     {
         float elapsedTime = 0f;
@@ -210,40 +195,6 @@ public class GameStateMachine : StateMachine
 
         FishCaught();
     }
-
-    IEnumerator FightingCoroutine()
-    {
-        
-        if (trophy != null)
-        {
-            Destroy(trophy);
-        }
-        trophy = Instantiate(caughtFish.mesh, caughtFishDisplay.transform.position, caughtFishDisplay.transform.rotation, caughtFishDisplay.transform);
-        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().RevealFishModelCoroutine());
-
-        // AudioManager.instance.MusicFishCaught();
-
-        UI_CaughtPrompt.SetActive(true);
-        //GameObject.Find("CaughtData").GetComponent<TMP_Text>().text = "You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore;
-        GameObject.Find("CaughtData_Breed").GetComponent<TMP_Text>().text = caughtFish.maidenName;
-        GameObject.Find("CaughtData_Size").GetComponent<TMP_Text>().text = caughtFish.sizeMultiplier.ToString();
-        GameObject.Find("CaughtData_Level").GetComponent<TMP_Text>().text = caughtFish.foodScore.ToString();
-       
-        //GameObject.Find("CaughtData_Song").GetComponent<TMP_Text>().text = caughtFish.favoriteSong;
-        //Debug.Log("You caught a x" + caughtFish.sizeMultiplier + "-sized " + caughtFish.maidenName + " fish! It Was Lvl: " + caughtFish.foodScore);
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < 5f)
-        {
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-        StartCoroutine(caughtFishDisplay.GetComponent<RotateObject>().HideFishModelCoroutine());
-        UI_CaughtPrompt.SetActive(false);
-        rodSpawnerReady = true;
-        Idle();
-    }
     
     IEnumerator FishKeepCoroutine()
     {
@@ -251,6 +202,8 @@ public class GameStateMachine : StateMachine
 
 
         //THIS IS WHERE WE APPLY THE LOGIC FOR SAVING THE FISH
+        FishDataHandler.Instance.SaveFish(caughtFish);
+        DataPersistenceManager.Instance.SaveGame();
 
 
         float elapsedTime = 0f;
