@@ -6733,6 +6733,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8506050526231145210}
+  - {fileID: 7806187483904556686}
   m_Father: {fileID: 2872015859632533973}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -6750,7 +6751,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7806187483904556686}
   m_Layer: 5
-  m_Name: Reset Prompt
+  m_Name: Tackle Box Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6773,11 +6774,11 @@ RectTransform:
   - {fileID: 8441776798973186215}
   - {fileID: 5304849748607842929}
   - {fileID: 632088556646039217}
-  m_Father: {fileID: 5413115610362110967}
+  m_Father: {fileID: 1632502004975880174}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 71}
+  m_AnchoredPosition: {x: 0, y: 545}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4569040714426603510
@@ -11460,7 +11461,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7806187483904556686}
   - {fileID: 8446848895657507632}
   - {fileID: 11854954146505117}
   m_Father: {fileID: 2872015859632533973}
