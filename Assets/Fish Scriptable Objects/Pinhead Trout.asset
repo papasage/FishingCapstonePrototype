@@ -19,7 +19,7 @@ MonoBehaviour:
   swimEscapeSpeed: 33
   deviateRange: 10
   deviateChance: 1.79
-  perceptionRadius: 20
+  perceptionRadius: 11
   avoidanceRadius: 7
   avoidanceSeconds: 1.5
   foodScore: 2

@@ -22,7 +22,7 @@ MonoBehaviour:
   perceptionRadius: 5.5
   avoidanceRadius: 7
   avoidanceSeconds: 1.5
-  foodScore: 1
+  foodScore: 2
   foodScoreMax: 5
   scoreDifferenceThreshold: 0
   minSizeMultiplier: 0.7

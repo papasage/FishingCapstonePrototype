@@ -22,11 +22,11 @@ MonoBehaviour:
   perceptionRadius: 9.35
   avoidanceRadius: 5
   avoidanceSeconds: 2
-  foodScore: 5
-  foodScoreMax: 7
+  foodScore: 2
+  foodScoreMax: 5
   scoreDifferenceThreshold: 0
   minSizeMultiplier: 0.8
-  maxSizeMultiplier: 1.5
+  maxSizeMultiplier: 1.2
   hungerWeight: 1
   hungryInSeconds: 30
   biteRange: 2.5
