@@ -8,6 +8,8 @@ using TMPro;
 using Unity.VisualScripting;
 using static BoidBehavior;
 
+[System.Serializable]
+
 public class BoidBehavior : MonoBehaviour
 {
     ////////////////////////////////////////////////////////////////////
