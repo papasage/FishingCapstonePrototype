@@ -131,7 +131,7 @@ public class ControllerInputManager : MonoBehaviour
         if (Input.GetButtonDown("Start"))
         {
             //toggle debug mode
-
+            UIController.instance.ToggleDiaryMenu();
         }
     }
     void SelectButton()
@@ -139,7 +139,7 @@ public class ControllerInputManager : MonoBehaviour
         if (Input.GetButtonDown("Select"))
         {
             //toggle debug mode
-            UIController.instance.debugMode = !UIController.instance.debugMode;
+            UIController.instance.ToggleDebugMenu();
 
         }
     }

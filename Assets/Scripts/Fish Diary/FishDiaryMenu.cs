@@ -9,7 +9,7 @@ public class FishDiaryMenu : MonoBehaviour
     public GameObject journalEntryPrefab;
     public Transform fishListParent;
 
-    private void Start()
+    private void OnEnable()
     {
         PopulateFishDiary();
     }

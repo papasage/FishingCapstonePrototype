@@ -50,6 +50,10 @@ public class UIController : MonoBehaviour
     [Header("Debug Menu")]
     public bool debugMode = false;
     [SerializeField] GameObject debugMenu;
+    
+    [Header("Diary Menu")]
+    public bool diaryMode = false;
+    [SerializeField] GameObject diaryMenu;
 
 
     private void OnEnable()
@@ -102,13 +106,6 @@ public class UIController : MonoBehaviour
             }
             CalculateLineLength();
         }
-
-        if (!debugMode)
-        {
-            debugMenu.SetActive(false);
-        }
-        else debugMenu.SetActive(true);
-
 
     }
 
@@ -275,5 +272,19 @@ public class UIController : MonoBehaviour
             // Assign the lerped color to the progressBarFill
             progressBarFill.color = lerpedColor;
         }
+    }
+
+    public void ToggleDebugMenu()
+    {
+        debugMode = !debugMode;
+
+        debugMenu.SetActive(debugMode);
+    }
+    
+    public void ToggleDiaryMenu()
+    {
+        diaryMode = !diaryMode;
+
+        diaryMenu.SetActive(diaryMode);
     }
 }
