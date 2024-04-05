@@ -26,7 +26,7 @@ public class BoidBehavior : MonoBehaviour
     private Rigidbody rb;                // The Rigidbody component of this boid is initialized on Start().
     private ChatBubble chatBubble;       // Fish Emote Prefab
     private List<BoidBehavior> boids;      // This List is used to log every boid in the scene. Initialized on Start().
-    private List<BoidBehavior> neighbors;  // This List is used determine what boids are closest on the "boid" List. Used in ApplySchoolingBehavior()
+    private List<BoidBehavior> neighbors = new List<BoidBehavior>();  // This List is used determine what boids are closest on the "boid" List. Used in ApplySchoolingBehavior()
     private GameObject currentMesh;      // When we instantiate a mesh to the fish, THAT INSTANCE will be stored here.
     private float currentSpeed;          // Storing the current movement speed to use in ApplySwimBehavior();
     private Vector3 predatorDistance;
@@ -107,7 +107,10 @@ public class BoidBehavior : MonoBehaviour
     void Awake()
     {
         //initialize the list of all boids in the pond
-        GetAllBoids();
+        //GetAllBoids();
+
+        PondManager.Instance.RegisterFish(this);
+
         //Choose a fish from the array of scriptable object fish if you dont already have one assigned
         if (fish == null)
         {
@@ -142,9 +145,14 @@ public class BoidBehavior : MonoBehaviour
     private void OnEnable()
     {
         //FishSpawner.onSpawn += GetAllBoids;
-        BoidBehavior.onDeath += GetAllBoids;
+        //BoidBehavior.onDeath += GetAllBoids;
     }
-    
+
+    private void OnDestroy()
+    {
+        PondManager.Instance.UnregisterFish(this);
+    }
+
     void FixedUpdate()
     {
         if (!isDead && !isLure)
@@ -354,8 +362,10 @@ public class BoidBehavior : MonoBehaviour
         currentMesh.transform.localScale = new Vector3(size, size, size);
     }
     void GetAllBoids()
-    {    
-        boids = new List<BoidBehavior>(GameObject.FindObjectsOfType<BoidBehavior>());
+    {
+        //boids = new List<BoidBehavior>(GameObject.FindObjectsOfType<BoidBehavior>());
+
+        List<BoidBehavior> boids = PondManager.Instance.GetAllFish();
 
         minnowCount = 0;
 
@@ -622,11 +632,21 @@ public class BoidBehavior : MonoBehaviour
     ////////////////////////////////////////////////////////////////////
     List<BoidBehavior> GetNeighborsWithinPerceptionRange()
     {
+        // Ensure FishManager is not null
+        if (PondManager.Instance == null)
+        {
+            Debug.LogError("FishManager is not initialized!");
+            return neighbors; // Return empty list or handle appropriately
+        }
+
         //Refresh the neighbors List
-        neighbors = new List<BoidBehavior>();
+        neighbors.Clear();
+
+        // Retrieve the list of all fish from FishManager
+        List<BoidBehavior> allFish = PondManager.Instance.GetAllFish();
 
         // Iterate through all boids in the scene
-        foreach (BoidBehavior otherBoid in boids)
+        foreach (BoidBehavior otherBoid in allFish)
         {
             // if the otherBoid is THIS, skip it in the loops
             if (otherBoid == this)
