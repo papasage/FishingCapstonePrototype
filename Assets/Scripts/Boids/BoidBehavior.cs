@@ -106,10 +106,19 @@ public class BoidBehavior : MonoBehaviour
     #region Runtime
     void Awake()
     {
-        //initialize the list of all boids in the pond
-        //GetAllBoids();
+        if (PondManager.Instance != null)
+        {
+            PondManager.Instance.RegisterFish(this);
+        }
+        else
+        {
+            Debug.LogError("PondManager.Instance is null!");
+            // Handle the situation where PondManager is not initialized
+            
+        }
 
-        PondManager.Instance.RegisterFish(this);
+        //initialize the list of all boids in the pond
+        GetAllBoids();
 
         //Choose a fish from the array of scriptable object fish if you dont already have one assigned
         if (fish == null)
@@ -575,7 +584,7 @@ public class BoidBehavior : MonoBehaviour
         foundFood = false;
         StartCoroutine(EncroachingHunger());
         
-        if (!boid.isLure && !boid.isHooked)
+        if (!boid.isLure && !boid.isHooked && foodScore < foodScoreMax)
         {
             foodScore++;
             sizeMultiplier += .5f;

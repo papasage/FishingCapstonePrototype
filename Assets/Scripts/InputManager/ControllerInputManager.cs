@@ -16,7 +16,7 @@ public class ControllerInputManager : MonoBehaviour
     public delegate void OnReel();
     public static OnReel onReel;
 
-    [SerializeField] float joystickDeadzone = 0.5f;
+    [SerializeField] public float joystickDeadzone = 0.5f;
     [SerializeField] float reelingSensitivity = 0.5f;
 
     //reel motion vaiables

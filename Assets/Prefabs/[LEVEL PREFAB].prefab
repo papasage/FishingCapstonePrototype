@@ -1060,11 +1060,11 @@ RectTransform:
   m_LocalScale: {x: 0.70831, y: 0.70831, z: 0.70831}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 7806187483904556686}
+  m_Father: {fileID: 8441776798973186215}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -437.7, y: -385}
+  m_AnchoredPosition: {x: -146.69995, y: -8.099945}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &888872341840410856
@@ -6773,7 +6773,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7769435970899286115}
-  - {fileID: 2417788003424322036}
   - {fileID: 8441776798973186215}
   - {fileID: 5304849748607842929}
   - {fileID: 632088556646039217}
@@ -7921,12 +7920,12 @@ GameObject:
   - component: {fileID: 444874397035471039}
   - component: {fileID: 5439238551336733864}
   m_Layer: 5
-  m_Name: UI_ResetPromptBackground
+  m_Name: TacklePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &7769435970899286115
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8415,7 +8414,7 @@ GameObject:
   - component: {fileID: 3948050325332686616}
   - component: {fileID: 5312030508841368682}
   m_Layer: 5
-  m_Name: Image
+  m_Name: RodPreviewImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11055,7 +11054,7 @@ GameObject:
   - component: {fileID: 5360534089743737851}
   - component: {fileID: 4421883445931387892}
   m_Layer: 0
-  m_Name: UI_BoidCountLabel
+  m_Name: TacklePrompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11072,7 +11071,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2417788003424322036}
   m_Father: {fileID: 7806187483904556686}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

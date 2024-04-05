@@ -13,6 +13,7 @@ public class FishSpawner : MonoBehaviour
     private List<GameObject> boids;
     private int BoidCount;
     public int pondBoidMax = 64;
+    public int spawnFrequencyInSeconds = 20;
 
 
     private void Start()
@@ -29,16 +30,16 @@ public class FishSpawner : MonoBehaviour
 
     void CheckBoidCount()
     {
-        boids = new List<GameObject>(GameObject.FindObjectsOfType<BoidBehavior>().Select(boid => boid.gameObject));
+        List<BoidBehavior> boids = PondManager.Instance.GetAllFish();
 
         BoidCount = 0;
-        foreach (GameObject boid in boids)
-        {
-            BoidBehavior boidBehavior = boid.GetComponent<BoidBehavior>();
 
-            if (boidBehavior != null)
+        foreach (BoidBehavior boid in boids)
+        {
+
+            if (boid != null)
             {
-                if (boidBehavior.isDead == false)
+                if (!boid.isDead)
                 {
                     BoidCount++;
                 }
@@ -54,17 +55,16 @@ public class FishSpawner : MonoBehaviour
 
     IEnumerator FishSpawnCountdown()
     {
-        yield return new WaitForSeconds(30);
+        yield return new WaitForSeconds(spawnFrequencyInSeconds);
 
         CheckBoidCount();
         
 
         if (BoidCount < pondBoidMax)
         {
-            Debug.Log("BOID RESPAWN");
+            //Debug.Log("BOID RESPAWN");
             SpawnFish();
         }
-        else Debug.Log("MAX BOIDS. RESPAWN TIMER BLOCKED");
 
         StartCoroutine(FishSpawnCountdown());
 

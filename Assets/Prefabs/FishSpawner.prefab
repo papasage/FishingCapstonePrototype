@@ -1073,6 +1073,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishPrefab: {fileID: 2550671585577833867, guid: 10a73ea3bd16bf94ea78c7e0a4f37057, type: 3}
   spawnLocation: {fileID: 3125900972941877446}
+  pondBoidMax: 128
 --- !u!1 &6568148016508110527
 GameObject:
   m_ObjectHideFlags: 0

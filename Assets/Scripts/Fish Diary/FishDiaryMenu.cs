@@ -9,9 +9,39 @@ public class FishDiaryMenu : MonoBehaviour
     public GameObject journalEntryPrefab;
     public Transform fishListParent;
 
+    //this is a list of all the entries we populate in the diary. We clear them when the diary is closed.
+    private List<GameObject> instantiatedEntries = new List<GameObject>();
+
+    public ScrollRect scrollRect;
+    public float scrollSpeed = 10f;
+
+    private void Awake()
+    {
+        scrollRect = GetComponentInChildren<ScrollRect>();
+    }
+
     private void OnEnable()
     {
         PopulateFishDiary();
+    }
+    private void OnDisable()
+    {
+        ClearFishDiary();
+    }
+
+    private void Update()
+    {
+        if (Input.GetAxisRaw("LeftStickY") > ControllerInputManager.instance.joystickDeadzone || Input.GetAxisRaw("LeftStickY") < -ControllerInputManager.instance.joystickDeadzone) ;
+        {
+            float verticalInput = Input.GetAxisRaw("LeftStickY");
+            float scrollDistance = verticalInput * scrollSpeed * Time.deltaTime;
+
+            // Apply scroll
+            Vector2 newPosition = scrollRect.content.anchoredPosition;
+            newPosition.y += scrollDistance;
+            scrollRect.content.anchoredPosition = newPosition;
+        }
+
     }
 
     void PopulateFishDiary()
@@ -24,7 +54,10 @@ public class FishDiaryMenu : MonoBehaviour
         {
             // make a new entry on the UI
             GameObject fishEntry = Instantiate(journalEntryPrefab, fishListParent);
-            
+
+            // Add the instantiated entry to the list
+            instantiatedEntries.Add(fishEntry); 
+
             // call your method to fill the data on that entry
             PopulateFishEntry(fishEntry,fish);
         }
@@ -54,5 +87,14 @@ public class FishDiaryMenu : MonoBehaviour
         comboText.text = fish.combo.ToString();
         //timeText.text = fish.timeCaught.ToString();
         sketch.sprite = fish.sketch;
+    }
+
+    void ClearFishDiary()
+    {
+        foreach (GameObject entry in instantiatedEntries)
+        {
+            Destroy(entry); // Destroy each instantiated entry
+        }
+        instantiatedEntries.Clear(); // Clear the list
     }
 }
