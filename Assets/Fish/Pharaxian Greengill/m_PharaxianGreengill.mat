@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mPinheadTrout
+  m_Name: m_PharaxianGreengill
   m_Shader: {fileID: 4800000, guid: 888365d463dac2d4991412ce79adbcf0, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -46,7 +46,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 622ebc3295b1df645b3bd5eeace5ad17, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3d66ca9b2182cb141a7aa4989824d861, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

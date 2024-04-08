@@ -10,33 +10,33 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
-  m_Name: Pharaxian Greengill
+  m_Name: Chruulian CatKoi
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: 56044dc3b3e04d645a6b2962e4263584, type: 3}
+  mesh: {fileID: 919132149155446097, guid: f7bd52c0d5089294da03bb23412abd45, type: 3}
   isLure: 0
-  swimSpeed: 26.3
+  swimSpeed: 26
   swimHuntSpeed: 35
   swimEscapeSpeed: 33
-  deviateRange: 31.32
-  deviateChance: 2.47
-  perceptionRadius: 9.18
-  avoidanceRadius: 7
-  avoidanceSeconds: 0.66
-  foodScore: 2
-  foodScoreMax: 5
+  deviateRange: 10
+  deviateChance: 1.29
+  perceptionRadius: 8
+  avoidanceRadius: 4.74
+  avoidanceSeconds: 1.5
+  foodScore: 3
+  foodScoreMax: 6
   scoreDifferenceThreshold: 0
   minSizeMultiplier: 0.5
-  maxSizeMultiplier: 1.5
+  maxSizeMultiplier: 1.2
   hungerWeight: 1
   hungryInSeconds: 30
   biteRange: 2.5
   decompositionTime: 5
-  cohesionWeight: 0.89
-  separationWeight: 1.5
-  alignmentWeight: 0.47
-  alignmentSpeed: 0.82
-  maidenName: Pharaxian Greengill
-  favoriteSong: Ready to Fly - Masayoshi Takanaka
-  luckyNumber: 48
-  sketch: {fileID: 21300000, guid: f052393b815fa4447a4956bbb65f56e8, type: 3}
+  cohesionWeight: 1
+  separationWeight: 0.18
+  alignmentWeight: 0.38
+  alignmentSpeed: 10.7
+  maidenName: Chruulian CatKoi
+  favoriteSong: Can't Stop - Red Hot Chilli Peppers
+  luckyNumber: 155
+  sketch: {fileID: 21300000, guid: d3c656fc001e85a4c8bbde4479539c19, type: 3}
   isSchoolingOnSpawn: 1
