@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79482e7967e83949a2ea77317b8b47d, type: 3}
   m_Name: Kavkiin Minnow
   m_EditorClassIdentifier: 
-  mesh: {fileID: 919132149155446097, guid: 6c04c8c8c77557f46bbde003b3887a56, type: 3}
+  mesh: {fileID: 919132149155446097, guid: 1ee14790a6806364fa47612037b70e95, type: 3}
   isLure: 0
   swimSpeed: 26
   swimHuntSpeed: 35

@@ -627,12 +627,12 @@ public class BoidBehavior : MonoBehaviour
     }
     void StimulateAppetite(float chance)
     {
-        Debug.Log("Bait Spotted: Rolling For Appetite");
+        //Debug.Log("Bait Spotted: Rolling For Appetite");
         int chanceRoll = Random.Range(1, 100);
 
         if (chanceRoll < chance && maidenName != "Kavkiin Minnow")
         {
-            Debug.Log("Roll Success: Now Hungry");
+           // Debug.Log("Roll Success: Now Hungry");
             isHungry = true;
         }
     }
